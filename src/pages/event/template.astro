@@ -1,0 +1,56 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+interface Props {
+    uri: string;
+}
+---
+
+<!--
+query Event {
+  events(where: {id: 456}) {
+    edges {
+      node {
+        id
+        eventData {
+          address
+          ageRestriction
+          eventDate
+          eventName
+          fieldGroupName
+          multipleDays
+          multipleStages
+          price
+          ticketLink
+        }
+        title
+      }
+    }
+  }
+}
+-->
+
+<Layout title="Externull Events | Events">
+    <img src="" srcset="" sizes="100vw" alt="" />
+    <h1>An example event post</h1>
+    <h2 class="event-date"></h2>
+    <ul class="event-lineup">
+        <li class="event-artist"></li>
+        <li class="event-artist"></li>
+    </ul>
+    <p class="event-venue"></p>
+    <a class="cta button"><h3>Get Tickets</h3></a>
+
+    <p>
+        <a href="/">&larr; back to all events</a>
+    </p>
+</Layout>
+
+<style>
+    * {
+        color: var(--text-light);
+    }
+    .cta > * {
+        color: var(--accent);
+    }
+</style>

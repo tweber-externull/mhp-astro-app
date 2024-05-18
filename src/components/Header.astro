@@ -1,0 +1,50 @@
+---
+import NavbarLink from './NavbarLink.astro';
+
+interface Props {
+	brandName: string;
+}
+
+const { brandName } = Astro.props;
+---
+
+<header class="flex text-center justify-between">
+	<div class="brand flex p-4">{brandName}
+	</div>
+	<navbar class="flex">
+		<NavbarLink name="Home" href="/" />
+		<NavbarLink name="Festivals" href="" />
+		<NavbarLink name="Shows" href="" />
+		<NavbarLink name="About" href="" />
+		<NavbarLink name="Contact" href="" />
+	</navbar>
+</header>
+<style>
+	header {
+		list-style: none;
+		display: flex;
+		background-color: #23262d;
+		background-image: none;
+		background-size: 400%;
+		background-position: 100%;
+		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+		margin: 0;
+	}
+	.brand {
+		color: #fff;
+		align-items: center;		
+	}
+	navbar { 
+		display: flex;
+	}
+	navbar > a {
+		width: 100%;
+		text-decoration: none;
+		line-height: 1.4;
+		padding: calc(1.5rem - 1px);
+		color: white;
+		background-color: #23262d;
+		opacity: 0.8;
+	}
+</style>
