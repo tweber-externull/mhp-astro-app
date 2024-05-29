@@ -1,0 +1,26 @@
+---
+import { wpquery } from "../data/wordpress";
+import Layout from "../layouts/Layout.astro";
+import DOMParser from "react-dom";
+---
+
+<Layout title="Externull Events | Events">
+	<h2 class="text-xl font-bold m-4">About</h2>
+	<div id="content" class="m-4"></div>
+</Layout>
+
+<style>
+	* {
+		color: var(--text-light);
+	}
+	.cta > * {
+		color: var(--accent);
+	}
+	.content-container > p {
+		margin-top: 5rem;
+		background-color: aqua;
+	}
+	a {
+		text-decoration: underline;
+	}
+</style>

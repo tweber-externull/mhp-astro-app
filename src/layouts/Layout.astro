@@ -1,12 +1,27 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { wpquery } from "../data/wordpress";
 
 interface Props {
 	title: string;
 }
 
 const { title } = Astro.props;
+
+const data = await wpquery({
+	query: `
+		query AllPages {
+			pages {
+				nodes {
+					uri
+					title
+					pageId
+				}
+			}
+		}
+	`,
+});
 ---
 
 <!doctype html>
@@ -18,11 +33,16 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link
+			type="text/css"
+			rel="stylesheet"
+			href="font-awesome/css/font-awesome.min.css"
+		/>
 	</head>
 	<body>
-		<Header brandName='Externull Events'/>
+		<Header brandName="Externull Events" pages={data.pages.nodes} />
 		<slot />
-		<Footer />
+		<Footer brandName="Externull Events" pages={data.pages.nodes} />
 	</body>
 </html>
 <style is:global>

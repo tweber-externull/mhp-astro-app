@@ -1,59 +1,82 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
-import Header from '../components/Header.astro';
-import NavbarLink from '../components/NavbarLink.astro';
-import { wpquery } from '../data/wordpress';
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import Header from "../components/Header.astro";
+import NavbarLink from "../components/NavbarLink.astro";
+import { wpquery } from "../data/wordpress";
 
 const data = await wpquery({
 	query: `
 		query AllEvents {
-			events(where: {orderby: {field: DATE, order: DESC}}) {
-				edges {
-					node {
-						id
-						eventData {
-							eventDate
-							eventName
-							venue {
-								nodes {
-									... on Venue {
-										id
-										venueData {
-											name
-											address
-										}
+			events {
+				nodes {
+					eventDetails {
+						eventDate
+						eventName
+						venue {
+							nodes {
+								... on Venue {
+									id
+									venueDetails {
+										name
+										city
+										state
+										website
 									}
 								}
 							}
 						}
-						eventId
-						title
+						ticketLink
 					}
+					eventId
+					id
+					title
 				}
 			}
 		}
 	`,
 });
 
+function isOutdated(date: string) {
+	const today = new Date();
+	const todayTimezoneOffset = today.getTimezoneOffset();
+	today.setMinutes(today.getMinutes() + todayTimezoneOffset);
+
+	const eventDate = new Date(date);
+	const eventTimezoneOffset = eventDate.getTimezoneOffset();
+	eventDate.setMinutes(eventDate.getMinutes() + eventTimezoneOffset);
+
+	return today > eventDate;
+}
 ---
 
 <Layout title="Externull Events">
 	<main>
 		<h1>Welcome to <span class="text-gradient">Externull Events</span></h1>
 		<p class="instructions text-center">Upcoming Events</p>
-		{data.events.edges.map((event: any) => {
-			console.log(event.node.eventData.venue.nodes[0].venueData.address)
-			return (
-				<Card
-					eventPage={`/pages/event/${event.node.eventId}`}
-					date={event.node.eventData.eventDate}
-					venueName={event.node.eventData.venue.nodes[0].venueData.name}
-					eventTitle={event.node.title}
-					address={event.node.eventData.venue.nodes[0].venueData.address}
-				/>
-			)
-		})}
+		{
+			data.events.nodes.map((event: any) => {
+				if (!isOutdated(event.eventDetails.eventDate)) {
+					return (
+						<Card
+							eventPage={`/pages/event/${event.eventId}`}
+							date={event.eventDetails.eventDate}
+							venueName={event.eventDetails.venue.nodes[0].venueDetails.name}
+							eventTitle={event.title}
+							ticketLink={event.eventDetails.ticketLink}
+							streetAddress={
+								event.eventDetails.venue.nodes[0].venueDetails.address
+							}
+							city={event.eventDetails.venue.nodes[0].venueDetails.city}
+							state={event.eventDetails.venue.nodes[0].venueDetails.state}
+							venueWebsite={
+								event.eventDetails.venue.nodes[0].venueDetails.website
+							}
+						/>
+					);
+				}
+			})
+		}
 	</main>
 </Layout>
 
@@ -93,7 +116,10 @@ const data = await wpquery({
 	.instructions {
 		margin-bottom: 2rem;
 		border: 1px solid rgba(var(--accent-light), 25%);
-		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		background: linear-gradient(
+			rgba(var(--accent-dark), 66%),
+			rgba(var(--accent-dark), 33%)
+		);
 		padding: 1.5rem;
 		border-radius: 8px;
 	}
