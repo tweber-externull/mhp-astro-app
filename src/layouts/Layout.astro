@@ -28,38 +28,48 @@ const data = await wpquery({
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta
+			name="description"
+			content="Morgan Henley Presents specializes in booking and promoting
+		the best in live music, comedy, and more at various locations around the Snoqualmie Valley"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<link
+			rel="shortcut icon"
+			type="image/x-icon"
+			href="https://morganhenleypresents.com/img/mhp-favicon.ico"
+		/>
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<link
 			type="text/css"
 			rel="stylesheet"
-			href="font-awesome/css/font-awesome.min.css"
+			href="../font-awesome/css/font-awesome.min.css"
 		/>
 	</head>
 	<body>
-		<Header brandName="Externull Events" pages={data.pages.nodes} />
+		<Header brandName="Morgan Henley Presents" pages={data.pages.nodes} />
 		<slot />
-		<Footer brandName="Externull Events" pages={data.pages.nodes} />
+		<Footer brandName="Morgan Henley Presents" pages={data.pages.nodes} />
 	</body>
 </html>
 <style is:global>
 	:root {
 		--background: rgb(30, 30, 30);
-		--primary: rgb(185, 90, 35);
+		--primary: hsl(251, 85%, 65%);
 		--secondary: rgb(200, 200, 200);
 		--text-light: rgb(255, 255, 255, 1);
-		--text-dark: rgb(0, 0, 0, 0);
-		--accent-light: 85, 207, 219;
-		--accent: 85, 207, 219;
-		--accent-dark: 85, 207, 219;
+		--text-dark: rgb(0, 0, 0);
+		--accent-light: rgb(193, 228, 180);
+		--accent: rgb(104, 190, 70);
+		--accent-dark: rgb(40, 75, 27);
 		--accent-gradient: linear-gradient(
 			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
+			var(--accent-light) 45%,
+			var(--accent)
 		);
 	}
 	html {
@@ -77,5 +87,37 @@ const data = await wpquery({
 			Bitstream Vera Sans Mono,
 			Courier New,
 			monospace;
+	}
+	a {
+		color: var(--accent-light);
+	}
+	p {
+		margin-top: 0.5rem;
+	}
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-weight: bold;
+	}
+	h1 {
+		margin-top: 2rem;
+	}
+	h2 {
+		margin-top: 1.75rem;
+	}
+	h3 {
+		margin-top: 1.5rem;
+	}
+	h4 {
+		margin-top: 1.25rem;
+	}
+	h5 {
+		margin-top: 1rem;
+	}
+	h6 {
+		margin-top: 0.9rem;
 	}
 </style>

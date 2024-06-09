@@ -8,7 +8,7 @@ interface Props {
 const { name, href, pageID } = Astro.props;
 ---
 
-<li class="nav-link max-w-40 center m-auto">
+<li class="nav-link max-w-40 center m-auto my-0">
 	<a href={href}>{name}</a>
 </li>
 <style>
@@ -16,27 +16,26 @@ const { name, href, pageID } = Astro.props;
 		list-style: none;
 		display: flex;
 		padding: 1rem;
-		background-color: #23262d;
 		background-image: none;
 		background-size: 400%;
 		background-position: 100%;
 		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		font-weight: bold;
 	}
 	.nav-link > a {
 		width: 100%;
 		text-decoration: none;
-		line-height: 1.4;
 		padding: calc(0.5rem - 1px);
 		border-radius: 8px;
-		color: var(--text-light);
-		/* background-color: #23262d; */
+		color: var(--text-dark);
 		opacity: 0.8;
 	}
 	.nav-link:is(:hover, :focus-within) {
 		background-position: 0;
 		background-image: var(--accent-gradient);
+		color: var(--text-dark);
 	}
 	.nav-link:is(:hover, :focus-within) > a {
-		color: var(--accent-dark);
+		color: var(--text-dark);
 	}
 </style>

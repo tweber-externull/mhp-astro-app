@@ -4,7 +4,7 @@ interface WPGraphQLParams {
 }
 
 export async function wpquery({ query, variables = {} }: WPGraphQLParams) {
-  const res = await fetch("https://externull.com/graphql", {
+  const res = await fetch("https://admin.morganhenleypresents.com/graphql", {
     method: "post",
     headers: {
       "Content-Type": "application/json",
