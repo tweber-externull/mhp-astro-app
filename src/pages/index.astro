@@ -4,6 +4,8 @@ import Card from "../components/Card.astro";
 import Header from "../components/Header.astro";
 import NavbarLink from "../components/NavbarLink.astro";
 import { wpquery } from "../data/wordpress";
+import { ScriptTarget, type ListFormat } from "typescript";
+import type { Key } from "react";
 
 const data = await wpquery({
 	query: `
@@ -13,17 +15,17 @@ const data = await wpquery({
 				eventDetails {
 					eventDate
 					venue {
-					nodes {
-						... on Venue {
-						id
-						venueDetails {
-							name
-							city
-							state
-							website
+						nodes {
+							... on Venue {
+							id
+							venueDetails {
+								name
+								city
+								state
+								website
+							}
+							}
 						}
-						}
-					}
 					}
 					ticketLink
 					eventname
@@ -37,6 +39,20 @@ const data = await wpquery({
 	`,
 });
 
+interface Event {
+	eventDetails: EventDetails;
+	eventId: Int16Array;
+	id: string;
+	title: string;
+}
+
+interface EventDetails {
+	eventDate: Date;
+	venue: object;
+	ticketLink: string;
+	eventname: string;
+}
+
 function isOutdated(date: string) {
 	const today = new Date();
 	const todayTimezoneOffset = today.getTimezoneOffset();
@@ -48,6 +64,22 @@ function isOutdated(date: string) {
 
 	return today > eventDate;
 }
+
+const sortEventsByDate = (events: Array<Event>) => {
+	events.sort((a, b) => {
+		const aDate = new Date(a.eventDetails.eventDate);
+		const bDate = new Date(b.eventDetails.eventDate);
+
+		if (aDate < bDate) {
+			return -1;
+		} else if (aDate > bDate) {
+			return 1;
+		} else {
+			return 0;
+		}
+	});
+	return events;
+};
 ---
 
 <Layout
@@ -56,7 +88,7 @@ function isOutdated(date: string) {
 	<main>
 		<h1 class="title text-center text-gradient">Upcoming Events</h1>
 		{
-			data.events.nodes.map((event: any) => {
+			sortEventsByDate(data.events.nodes).map((event: any) => {
 				if (!isOutdated(event.eventDetails.eventDate)) {
 					return (
 						<Card
