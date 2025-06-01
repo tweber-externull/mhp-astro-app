@@ -1,0 +1,23 @@
+image: node:20
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Build and Deploy to DigitalOcean
+          caches:
+            - node
+          script:
+            - npm ci
+            - npm run build
+            # Deploy via SSH
+            - pipe: atlassian/ssh-run:0.4.0
+              variables:
+                SSH_USER: "deployuser"
+                SERVER: "165.227.130.227"
+                COMMAND: |
+                  cd /var/www/morganhenleypresents/mhp-astro-app/
+                  git pull origin main
+                  npm ci
+                  npm run build
+                  pm2 restart all || npm start   # Adjust to your process manager
