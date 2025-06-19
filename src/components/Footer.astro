@@ -7,10 +7,27 @@ interface Props {
 const { brandName, pages } = Astro.props;
 ---
 
-<footer class="text-white w-auto p-4 flex gap-4">
-	<div class="w-2/3">
-		<h4 class="text-xl font-bold">{brandName}</h4>
-		<navbar class="flex flex-row gap-4">
+<footer class="py-4 text-white w-full flex flex-col gap-4 text-center">
+	<div class="contact w-auto">
+		<h4 class="py-4">Contact:</h4>
+		<div class="container flex flex-col md:flex-row gap-4 text-center">
+			<div class="m-auto">
+				<a href="tel:425-246-0695">
+					<i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
+					<p>425-246-0695</p>
+				</a>
+			</div>
+			<div class="m-auto">
+				<a class="text-center flex flex-col" href="mailto:example@email.com">
+					<i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
+					<p class="m-auto">morganhenleypresents@gmail.com</p>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="w-auto">
+		<h4 class="text-xl font-bold py-4">{brandName}</h4>
+		<navbar class="flex flex-row gap-4 text-center justify-center">
 			<li class="Home"><a href="/">Home</a></li>
 			{
 				pages.map((page: any) => {
@@ -22,23 +39,6 @@ const { brandName, pages } = Astro.props;
 				})
 			}
 		</navbar>
-	</div>
-	<div class="contact w-1/3">
-		<h4>Contact:</h4>
-		<div class="container flex flex-row gap-4">
-			<div class="max-w-48">
-				<a href="tel:425-246-0695">
-					<i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
-					<p>425-246-0695</p>
-				</a>
-			</div>
-			<div class="max-w-48">
-				<a href="mailto:example@email.com">
-					<i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
-					<p>morganhenleypresents@gmail.com</p>
-				</a>
-			</div>
-		</div>
 	</div>
 </footer>
 

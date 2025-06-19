@@ -7,11 +7,11 @@ interface Props {
 	pages: [Object];
 }
 
-const { brandName, pages } = Astro.props;
+const { pages } = Astro.props;
 ---
 
 <header class="flex text-center justify-between">
-	<div class="brand flex p-4 justify-center flex-row">
+	<div class="brand flex justify-center flex-row">
 		<a href="#home"
 			><img
 				class="logo"
@@ -19,9 +19,8 @@ const { brandName, pages } = Astro.props;
 				alt="Morgan Henley Presents"
 			/></a
 		>
-		<h1 class="mx-8 my-0 text-dark">Morgan Henley Presents</h1>
 	</div>
-	<navbar class="flex">
+	<navbar class="flex align-center justify-center flex-row">
 		<NavbarLink name="Home" href="/" pageID="" />
 		{
 			pages.map((page: any) => {
@@ -49,7 +48,6 @@ const { brandName, pages } = Astro.props;
 	.brand {
 		color: var(--text-dark);
 		align-items: center;
-		font-size: x-large;
 	}
 	.logo {
 		width: 4rem;
@@ -60,8 +58,7 @@ const { brandName, pages } = Astro.props;
 	navbar > a {
 		width: 100%;
 		text-decoration: none;
-		line-height: 1.4;
-		/* padding: calc(1.5rem - 1px); */
+		line-height: 1;
 		color: var(--text-dark);
 		opacity: 0.8;
 	}

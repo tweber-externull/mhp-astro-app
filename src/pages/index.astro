@@ -86,7 +86,7 @@ const sortEventsByDate = (events: Array<Event>) => {
 	title="Morgan Henley Presents | Live Entertainment Booking and Promotions"
 >
 	<main>
-		<h1 class="title text-center text-gradient">Upcoming Events</h1>
+		<h1 class="title text-center text-gradient md:font-size-l">Upcoming Events</h1>
 		{
 			sortEventsByDate(data.events.nodes).map((event: any) => {
 				if (!isOutdated(event.eventDetails.eventDate)) {
@@ -120,11 +120,11 @@ const sortEventsByDate = (events: Array<Event>) => {
 		width: 800px;
 		max-width: calc(100% - 2rem);
 		color: var(--text-light);
-		font-size: 20px;
-		line-height: 1.6;
+		font-size: 1rem;
+		line-height: 1.0;
 	}
 	h1 {
-		font-size: 4rem;
+		font-size: 2rem;
 		font-weight: 700;
 		line-height: 1;
 		text-align: center;
