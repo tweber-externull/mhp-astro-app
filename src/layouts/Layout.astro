@@ -1,7 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { wpquery } from "../data/wordpress";
+import "../styles/global.css";
 
 interface Props {
 	title: string;
@@ -9,19 +9,10 @@ interface Props {
 
 const { title } = Astro.props;
 
-const data = await wpquery({
-	query: `
-		query AllPages {
-			pages {
-				nodes {
-					uri
-					title
-					pageId
-				}
-			}
-		}
-	`,
-});
+// Temporary static pages until Pages content type is created in Strapi
+const pages = [
+	{ title: "About", uri: "/about", pageId: "1" }
+];
 ---
 
 <!doctype html>
@@ -51,9 +42,9 @@ const data = await wpquery({
 		/>
 	</head>
 	<body>
-		<Header brandName="Morgan Henley Presents" pages={data.pages.nodes} />
+		<Header brandName="Morgan Henley Presents" pages={pages} />
 		<slot />
-		<Footer brandName="Morgan Henley Presents" pages={data.pages.nodes} />
+		<Footer brandName="Morgan Henley Presents" pages={pages} />
 	</body>
 </html>
 <style is:global>

@@ -1,56 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
-import Header from "../components/Header.astro";
-import NavbarLink from "../components/NavbarLink.astro";
-import { wpquery } from "../data/wordpress";
-import { ScriptTarget, type ListFormat } from "typescript";
-import type { Key } from "react";
+import { getEvents } from "../data/strapi";
 
-const data = await wpquery({
-	query: `
-		query AllEvents {
-			events {
-				nodes {
-				eventDetails {
-					eventDate
-					venue {
-						nodes {
-							... on Venue {
-							id
-							venueDetails {
-								name
-								city
-								state
-								website
-							}
-							}
-						}
-					}
-					ticketLink
-					eventname
-				}
-				eventId
-				id
-				title
-				}
-			}
-		}
-	`,
-});
+const eventsData = await getEvents();
 
 interface Event {
-	eventDetails: EventDetails;
-	eventId: Int16Array;
-	id: string;
-	title: string;
-}
-
-interface EventDetails {
-	eventDate: Date;
-	venue: object;
-	ticketLink: string;
-	eventname: string;
+	id: number;
+	event_name: string;
+	start_date: string;
+	// ticket_link?: string;
+	// event_poster?: {
+	// 	url: string;
+	// };
+	// event_days: EventDay[];
 }
 
 function isOutdated(date: string) {
@@ -58,17 +21,17 @@ function isOutdated(date: string) {
 	const todayTimezoneOffset = today.getTimezoneOffset();
 	today.setMinutes(today.getMinutes() + todayTimezoneOffset);
 
-	const eventDate = new Date(date);
-	const eventTimezoneOffset = eventDate.getTimezoneOffset();
-	eventDate.setMinutes(eventDate.getMinutes() + eventTimezoneOffset);
+	const event_date = new Date(date);
+	const eventTimezoneOffset = event_date.getTimezoneOffset();
+	event_date.setMinutes(event_date.getMinutes() + eventTimezoneOffset);
 
-	return today > eventDate;
+	return today > event_date;
 }
 
 const sortEventsByDate = (events: Array<Event>) => {
-	events.sort((a, b) => {
-		const aDate = new Date(a.eventDetails.eventDate);
-		const bDate = new Date(b.eventDetails.eventDate);
+	return events.filter(e => e?.start_date).sort((a, b) => {
+		const aDate = new Date(a.start_date);
+		const bDate = new Date(b.start_date);
 
 		if (aDate < bDate) {
 			return -1;
@@ -78,7 +41,6 @@ const sortEventsByDate = (events: Array<Event>) => {
 			return 0;
 		}
 	});
-	return events;
 };
 ---
 
@@ -88,27 +50,26 @@ const sortEventsByDate = (events: Array<Event>) => {
 	<main class="container md:w-3/4 m-auto">
 		<h1 class="title text-center text-gradient md:font-size-l">Upcoming Events</h1>
 		{
-			sortEventsByDate(data.events.nodes).map((event: any) => {
-				if (!isOutdated(event.eventDetails.eventDate)) {
-					return (
-						<Card
-							eventPage={`/pages/event/${event.eventId}`}
-							date={event.eventDetails.eventDate}
-							venueName={event.eventDetails.venue.nodes[0].venueDetails.name}
-							eventTitle={event.title}
-							ticketLink={event.eventDetails.ticketLink}
-							streetAddress={
-								event.eventDetails.venue.nodes[0].venueDetails.address
-							}
-							city={event.eventDetails.venue.nodes[0].venueDetails.city}
-							state={event.eventDetails.venue.nodes[0].venueDetails.state}
-							venueWebsite={
-								event.eventDetails.venue.nodes[0].venueDetails.website
-							}
-						/>
-					);
-				}
-			})
+			eventsData && eventsData.length > 0 ? (
+				sortEventsByDate(eventsData).map((event: any) => {
+					const venue = event.event_days?.[0]?.event_day_venues?.[0]?.venue;
+					if (event.start_date && !isOutdated(event.start_date)) {
+						return (
+							<Card
+								date={event.start_date}
+								venueName={venue?.venue_name || 'TBA'}
+								eventTitle={event.event_name}
+								ticketLink={event.ticket_link || ''}
+								city={venue?.city || ''}
+								state={venue?.state || ''}
+								venueWebsite={venue?.website || ''}
+							/>
+						);
+					}
+				})
+			) : (
+				<p class="text-center">No upcoming events found. Make sure Strapi is running and has published events.</p>
+			)
 		}
 	</main>
 </Layout>

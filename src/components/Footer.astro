@@ -1,7 +1,7 @@
 ---
 interface Props {
 	brandName: string;
-	pages: [Object];
+	pages: Array<{ title: string; uri: string; pageId: string }>;
 }
 
 const { brandName, pages } = Astro.props;

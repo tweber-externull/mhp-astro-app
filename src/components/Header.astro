@@ -1,10 +1,9 @@
 ---
-import { wpquery } from "../data/wordpress";
 import NavbarLink from "./NavbarLink.astro";
 
 interface Props {
 	brandName: string;
-	pages: [Object];
+	pages: Array<{ title: string; uri: string; pageId: string }>;
 }
 
 const { pages } = Astro.props;
@@ -22,11 +21,11 @@ const { pages } = Astro.props;
 			>
 		</div>
 		<navbar class="flex md:w-1/3 align-center flex-row justify-end">
-			<NavbarLink name="Events" href="/" pageID="" />
+			<NavbarLink name="Events" href="/" />
 			{
 				pages.map((page: any) => {
 					return (
-						<NavbarLink name={page.title} href={page.uri} pageID={page.pageid} />
+						<NavbarLink name={page.title} href={page.uri} />
 					);
 				})
 			}
