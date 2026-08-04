@@ -2,24 +2,32 @@
   "name": "Morgan Henley Presents - WebApp",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": "22.x"
+  },
+  "overrides": {
+    "@vercel/routing-utils": {
+      "path-to-regexp": "6.3.0"
+    }
+  },
   "scripts": {
     "dev": "astro dev",
-    "start": "astro start",
+    "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.5.10",
-    "@astrojs/node": "^8.2.5",
-    "@astrojs/react": "^3.1.0",
-    "@astrojs/tailwind": "^5.1.0",
-    "@types/react": "^18.2.72",
-    "@types/react-dom": "^18.2.22",
-    "astro": "^4.5.10",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.4.3"
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/react": "^6.0.2",
+    "@astrojs/vercel": "^11.0.4",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "astro": "^7.1.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
   }
 }

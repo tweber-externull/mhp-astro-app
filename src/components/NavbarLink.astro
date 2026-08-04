@@ -2,10 +2,9 @@
 interface Props {
 	name: string;
 	href: string;
-	pageID: string;
 }
 
-const { name, href, pageID } = Astro.props;
+const { name, href } = Astro.props;
 ---
 
 <li class="nav-link max-w-40 center m-auto my-0">
@@ -21,6 +20,7 @@ const { name, href, pageID } = Astro.props;
 		background-position: 100%;
 		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 		font-weight: bold;
+		align-items: center;
 	}
 	.nav-link > a {
 		width: 100%;

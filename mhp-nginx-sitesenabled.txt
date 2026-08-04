@@ -1,0 +1,40 @@
+server {
+
+        server_name morganhenleypresents.com dev.morganhenleypresents.com www.morganhenleypresents.com;
+	add_header Strict-Transport-Security "max-age=15552000; includeSubDomains" always;
+
+	location / {
+		proxy_pass http://127.0.0.1:4321/;
+		proxy_next_upstream error  timeout invalid_header http_500 http_502 http_503;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto https;
+		proxy_redirect off;
+	        proxy_read_timeout 5m;
+        }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/morganhenleypresents.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/morganhenleypresents.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+server {
+    if ($host = morganhenleypresents.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+        listen 80;
+        listen [::]:80;
+
+        server_name morganhenleypresents.com;
+    return 404; # managed by Certbot
+
+
+}
