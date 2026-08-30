@@ -15,7 +15,7 @@ function getHeaders() {
 	};
 
 	if (STRAPI_API_TOKEN) {
-		headers.Authorization = `Bearer ${STRAPI_API_TOKEN}`;
+		headers.Authorization = "Bearer " + STRAPI_API_TOKEN;
 	}
 
 	return headers;
