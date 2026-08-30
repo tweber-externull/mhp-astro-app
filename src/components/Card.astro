@@ -1,4 +1,6 @@
 ---
+import { getMonthAndDate, getWeekdayName } from "../utils/date";
+
 interface Props {
 	date: string;
 	venueName: string;
@@ -19,27 +21,6 @@ const {
 	eventTitle,
 } = Astro.props;
 
-function getLocalizedDate(eventDate: string) {
-	const date = new Date(eventDate);
-	const timezoneOffset = date.getTimezoneOffset();
-	date.setMinutes(date.getMinutes() + timezoneOffset);
-	return date;
-}
-
-function getWeekdayName(eventDate: string) {
-	const weekdayName = getLocalizedDate(eventDate).toLocaleDateString("en-US", {
-		weekday: "long",
-	});
-	return weekdayName;
-}
-
-function getMonthAndDate(eventDate: string) {
-	const monthAndDate = getLocalizedDate(eventDate).toLocaleDateString("en-US", {
-		month: "long",
-		day: "numeric",
-	});
-	return monthAndDate;
-}
 ---
 
 <li class="link-card mx-auto my-8 flex flex-row p-6 rounded-md lg:w-3/4 text-white">

@@ -2,46 +2,10 @@
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
 import { getEvents } from "../data/strapi";
+import { isOutdated, sortEventsByDate } from "../utils/events";
 
 const eventsData = await getEvents();
 
-interface Event {
-	id: number;
-	event_name: string;
-	start_date: string;
-	// ticket_link?: string;
-	// event_poster?: {
-	// 	url: string;
-	// };
-	// event_days: EventDay[];
-}
-
-function isOutdated(date: string) {
-	const today = new Date();
-	const todayTimezoneOffset = today.getTimezoneOffset();
-	today.setMinutes(today.getMinutes() + todayTimezoneOffset);
-
-	const event_date = new Date(date);
-	const eventTimezoneOffset = event_date.getTimezoneOffset();
-	event_date.setMinutes(event_date.getMinutes() + eventTimezoneOffset);
-
-	return today > event_date;
-}
-
-const sortEventsByDate = (events: Array<Event>) => {
-	return events.filter(e => e?.start_date).sort((a, b) => {
-		const aDate = new Date(a.start_date);
-		const bDate = new Date(b.start_date);
-
-		if (aDate < bDate) {
-			return -1;
-		} else if (aDate > bDate) {
-			return 1;
-		} else {
-			return 0;
-		}
-	});
-};
 ---
 
 <Layout
