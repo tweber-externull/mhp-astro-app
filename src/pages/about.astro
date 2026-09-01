@@ -2,10 +2,19 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Externull Events | Events">
-	<h1 class="text-xl font-bold m-auto my-8 text-center">About</h1>
-	<div id="content-container" class="m-4">
-		<p class="text-center">
+<Layout title="Morgan Henley Presents | About">
+	<main class="about-page">
+		<header class="about-heading">
+			<p class="eyebrow">The people behind the night</p>
+			<h1>Community<br /><em>is the headliner.</em></h1>
+		</header>
+		<div class="about-grid">
+			<div class="about-lead">
+				<p>Morgan Henley Presents was founded in the Summer of 2016 in the Snoqualmie Valley, WA. We produce music events designed to bring together community, musicians, artists, businesses, and other like-minded people.</p>
+				<p class="about-callout">Small towns.<br /><span>Big energy.</span></p>
+			</div>
+			<div class="about-copy">
+		<p>
 			Morgan Henley Presents was founded in the Summer of 2016 in the Snoqualmie
 			Valley, WA. Morgan Henley Presents is a production company specializing in
 			producing music events. The goal is to bring together community,
@@ -37,7 +46,7 @@ import Layout from "../layouts/Layout.astro";
 				>@brodienationmusicfest</a
 			>"
 		</p>
-		<p class="text-center">
+		<p>
 			For inquiry or booking questions please visit <a href="#home"
 				>www.morganhenleypresents.com</a
 			>
@@ -45,7 +54,7 @@ import Layout from "../layouts/Layout.astro";
 				>morganhenleypresents@gmail.com</a
 			>.
 		</p>
-		<p class="text-center">
+		<p>
 			Morgan Henley is also involved in other community ventures. Including
 			being a board member & radio show host on the local Snoqualmie Low Power
 			FM station Valley 104.9. For more details please visit www.valley1049.org
@@ -61,17 +70,17 @@ import Layout from "../layouts/Layout.astro";
 				>facebook.com/JammieswMorganHenley/</a
 			>
 		</p>
-		<p class="text-center">
+		<p>
 			A new venture Morgan is a part of is The Lee Arts Foundation in Carnation.
 			An arts foundation in memory of the late Lee Grumman. More info to come
 			about that in 2019.
 		</p>
-		<p class="text-center">
+		<p>
 			Here’s a list of events & venues Morgan Henley has worked with during
 			BrodieProductions & People w/ Instruments.
 		</p>
-		<h6 class="bio-list-header text-center">- BrodieProductions -</h6>
-		<ul class="text-center">
+		<h2 class="bio-list-header">BrodieProductions</h2>
+		<ul>
 			Waldos (Kirkland, WA)<br />
 			Valhalla Bar & Grill (Kirkland, WA, Produced the 1st BeerPong tourney in a
 			bar in WA)<br />
@@ -83,14 +92,14 @@ import Layout from "../layouts/Layout.astro";
 			Music Festival 2006-2012 (Carnation, WA).<br />
 		</ul>
 
-		<h6 class="bio-list-header text-center">- People w/ Instruments -</h6>
-		<ul class="text-center">
+		<h2 class="bio-list-header">People w/ Instruments</h2>
+		<ul>
 			Created & Produced PWI Music Festival 2012 & 2013 (Carnation, WA)<br />
 			Co-Produced Homegrown Music Festival 2014 (Carnation, WA)<br />
 			Co-Produced NW Roots Festival (Carnation, WA)<br />
 		</ul>
-		<h6 class="bio-list-header text-center">- Venues -</h6>
-		<ul class="text-center">
+		<h2 class="bio-list-header">Venues</h2>
+		<ul>
 			Pete’s Club Grill (Carnation, WA)<br />
 			Twin Dragon Sports Bar (Duvall, WA)<br />
 			Raging River Cafe (Fall City, WA)<br />
@@ -100,21 +109,29 @@ import Layout from "../layouts/Layout.astro";
 			Nectar Lounge (Seattle, WA)<br />
 			BrodieNation Music Festival 2012-2015 (Carnation, WA)<br />
 		</ul>
-	</div>
+			</div>
+		</div>
+	</main>
 
 	<style>
-		* {
-			color: var(--text-light);
-		}
-		.cta > * {
-			color: var(--accent);
-		}
-		.content-container > p {
-			margin-top: 5rem;
-			background-color: aqua;
-		}
-		a {
-			text-decoration: underline;
+		.about-page { max-width: 1180px; margin: auto; padding: 6rem 2rem 2rem; }
+		.about-heading { border-bottom: 1px solid var(--line); padding-bottom: 4rem; }
+		.about-heading .eyebrow { color: var(--acid); }
+		.about-heading h1 { margin: 2rem 0 0; color: var(--paper); font-family: var(--serif); font-size: clamp(4rem, 10vw, 9rem); font-weight: 500; letter-spacing: -0.09em; line-height: 0.78; }
+		.about-heading h1 em { color: var(--acid); font-style: normal; }
+		.about-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 8rem; padding: 5rem 0; }
+		.about-lead > p:first-child { margin: 0; color: var(--paper); font-size: 1.2rem; line-height: 1.45; }
+		.about-callout { margin-top: 8rem; color: var(--cobalt); font-family: var(--serif); font-size: 3.5rem; font-style: italic; letter-spacing: -0.07em; line-height: 0.8; transform: rotate(-5deg); }
+		.about-callout span { color: var(--coral); }
+		.about-copy { color: var(--paper-muted); font-size: 0.95rem; line-height: 1.7; }
+		.about-copy p { margin: 0 0 1.5rem; }
+		.about-copy a { color: var(--acid); text-decoration: underline; text-underline-offset: 3px; }
+		.bio-list-header { margin: 3rem 0 1rem; color: var(--paper); font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+		.about-copy ul { margin: 0; padding: 0; list-style: none; color: var(--paper-muted); font-family: var(--mono); font-size: 0.72rem; line-height: 1.8; }
+		@media (max-width: 750px) {
+			.about-page { padding: 4rem 1.25rem 1rem; }
+			.about-grid { display: block; padding: 3rem 0; }
+			.about-callout { margin: 4rem 0; }
 		}
 	</style>
 </Layout>

@@ -11,79 +11,81 @@ const eventsData = await getEvents();
 <Layout
 	title="Morgan Henley Presents | Live Entertainment Booking and Promotions"
 >
-	<main class="container md:w-3/4 m-auto">
-		<h1 class="title text-center text-gradient md:font-size-l">Upcoming Events</h1>
-		{
-			eventsData && eventsData.length > 0 ? (
-				sortEventsByDate(eventsData).map((event: any) => {
-					const venue = event.event_days?.[0]?.event_day_venues?.[0]?.venue;
-					if (event.start_date && !isOutdated(event.start_date)) {
-						return (
-							<Card
-								date={event.start_date}
-								venueName={venue?.venue_name || 'TBA'}
-								eventTitle={event.event_name}
-								ticketLink={event.ticket_link || ''}
-								city={venue?.city || ''}
-								state={venue?.state || ''}
-								venueWebsite={venue?.website || ''}
-							/>
-						);
-					}
-				})
-			) : (
-				<p class="text-center">No upcoming events found. Make sure Strapi is running and has published events.</p>
-			)
-		}
+	<main>
+		<section class="hero">
+			<div class="hero-copy">
+				<p class="eyebrow">Independent live entertainment · est. 2016</p>
+				<h1>Good nights<br /><em>start here.</em></h1>
+				<p class="hero-intro">Morgan Henley Presents brings music, comedy, and community together across the Snoqualmie Valley and beyond.</p>
+				<a class="hero-link" href="#events">See what’s on <span>↓</span></a>
+			</div>
+			<div class="hero-art" aria-hidden="true">
+				<div class="orbit orbit-one"></div>
+				<div class="orbit orbit-two"></div>
+				<div class="hero-stamp">MHP<br /><span>LIVE</span></div>
+				<p>Turn it<br />up.</p>
+			</div>
+		</section>
+		<section class="events-section" id="events">
+			<div class="section-heading">
+				<p class="eyebrow">The calendar</p>
+				<h2>Upcoming<br /><em>events</em></h2>
+				<p class="section-note">Doors, dates, and the occasional late night.</p>
+			</div>
+			<div class="event-list">
+				{
+					eventsData && eventsData.length > 0 ? (
+						sortEventsByDate(eventsData)
+							.filter((event: any) => event.start_date && !isOutdated(event.start_date))
+							.map((event: any) => {
+								const venue = event.event_days?.[0]?.event_day_venues?.[0]?.venue;
+								return <Card date={event.start_date} venueName={venue?.venue_name || "TBA"} eventTitle={event.event_name} ticketLink={event.ticket_link || ""} city={venue?.city || ""} state={venue?.state || ""} venueWebsite={venue?.website || ""} />;
+							})
+					) : (
+						<p class="empty-state">No upcoming events found. Check back soon for the next night out.</p>
+					)
+				}
+			</div>
+		</section>
 	</main>
 </Layout>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		max-width: calc(100% - 2rem);
-		color: var(--text-light);
-		font-size: 1rem;
-		line-height: 1.0;
-	}
-	h1 {
-		font-size: 2rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: var(--accent-gradient);
-		background-size: 400%;
-		background-position: 0%;
-		color: var(--accent-light);
-	}
-	.title {
-		margin-bottom: 2rem;
-		border: 2px outset var(--accent-light);
-		/* background: var(--accent-gradient); */
-		padding: 1.5rem;
-		border-radius: 8px;
-	}
-	.title code {
-		font-size: 0.8em;
-		font-weight: bold;
-		background: rgba(var(--accent-light), 12%);
-		color: rgb(var(--accent-light));
-		border-radius: 4px;
-		padding: 0.3em 0.4em;
-	}
-	.title strong {
-		color: rgb(var(--accent-light));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 2rem;
-		padding: 0;
+	main { max-width: 1180px; margin: auto; padding: 0 2rem; }
+	.hero { display: grid; grid-template-columns: minmax(0, 1fr) 0.8fr; min-height: 610px; align-items: center; gap: 4rem; }
+	.hero-copy { padding: 5rem 0; }
+	.hero-copy .eyebrow { color: var(--acid); animation: reveal 700ms both; }
+	h1 { max-width: 10ch; margin: 1.5rem 0 2rem; color: var(--paper); font-family: var(--serif); font-size: clamp(4.5rem, 11vw, 9.5rem); font-weight: 500; letter-spacing: -0.09em; line-height: 0.77; animation: reveal 700ms 100ms both; }
+	h1 em { color: var(--acid); font-style: normal; }
+	.hero-intro { max-width: 28rem; margin: 0; color: var(--paper-muted); font-size: 1rem; line-height: 1.55; animation: reveal 700ms 200ms both; }
+	.hero-link { display: inline-flex; gap: 1rem; align-items: center; margin-top: 2.5rem; color: var(--paper); font-family: var(--mono); font-size: 0.7rem; text-decoration: none; text-transform: uppercase; animation: reveal 700ms 300ms both; }
+	.hero-link span { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid var(--acid); border-radius: 50%; color: var(--acid); font-size: 1rem; transition: transform 180ms ease; }
+	.hero-link:hover span { transform: translateY(4px); }
+	.hero-art { position: relative; min-height: 26rem; }
+	.orbit { position: absolute; border: 1px solid rgba(215, 255, 63, 0.5); border-radius: 50%; transform: rotate(-25deg); }
+	.orbit-one { inset: 9% 5% 12% 20%; border-width: 2px; }
+	.orbit-two { inset: 20% 18% 0 3%; border-color: rgba(89, 100, 255, 0.8); transform: rotate(48deg); }
+	.hero-stamp { position: absolute; top: 27%; right: 20%; display: grid; width: 8rem; height: 8rem; place-content: center; border: 1px solid var(--acid); border-radius: 50%; color: var(--acid); font-family: var(--mono); font-size: 0.9rem; line-height: 1.1; letter-spacing: 0.1em; text-align: center; transform: rotate(12deg); }
+	.hero-stamp span { color: var(--coral); font-size: 1.3rem; }
+	.hero-art > p { position: absolute; right: 1%; bottom: 5%; margin: 0; color: var(--cobalt); font-family: var(--serif); font-size: clamp(3.5rem, 7vw, 6rem); font-style: italic; letter-spacing: -0.08em; line-height: 0.75; transform: rotate(-10deg); }
+	.events-section { padding: 5rem 0 2rem; }
+	.section-heading { display: grid; grid-template-columns: 1fr 1.4fr 1fr; align-items: end; gap: 2rem; margin-bottom: 3rem; }
+	.section-heading .eyebrow { color: var(--coral); }
+	.section-heading h2 { margin: 0; font-family: var(--serif); font-size: clamp(3.5rem, 7vw, 6.5rem); font-weight: 500; letter-spacing: -0.08em; line-height: 0.78; }
+	.section-heading h2 em { color: var(--acid); font-style: normal; }
+	.section-note { justify-self: end; max-width: 10rem; margin: 0; color: var(--paper-muted); font-family: var(--mono); font-size: 0.65rem; line-height: 1.5; text-align: right; text-transform: uppercase; }
+	.event-list { margin-left: 16%; }
+	.empty-state { padding: 3rem 0; color: var(--paper-muted); }
+	@keyframes reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+	@media (max-width: 700px) {
+		main { padding: 0 1.25rem; }
+		.hero { display: block; min-height: auto; }
+		.hero-copy { padding: 5rem 0 2rem; }
+		.hero-art { min-height: 17rem; margin: 0 -1rem; }
+		.hero-stamp { right: 28%; }
+		.section-heading { display: block; }
+		.section-heading h2 { margin: 1.5rem 0; }
+		.section-note { text-align: left; }
+		.event-list { margin-left: 0; margin-top: 2.5rem; }
 	}
 </style>

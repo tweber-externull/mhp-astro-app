@@ -93,6 +93,51 @@ export async function getEvents() {
 	return response.data || [];
 }
 
+export interface StrapiMedia {
+	id: number;
+	name: string;
+	alternativeText?: string | null;
+	url: string;
+	width?: number;
+	height?: number;
+	formats?: {
+		medium?: { url: string };
+		small?: { url: string };
+		thumbnail?: { url: string };
+	};
+	mime?: string;
+}
+
+export async function getBrodieNationGallery() {
+	const response = await strapiQuery({
+		endpoint: "/upload/files",
+		query: {
+			"pagination[pageSize]": 1000,
+			sort: "createdAt:asc",
+		},
+	});
+	const files = Array.isArray(response) ? response : response.data || [];
+
+	return (files as StrapiMedia[])
+		.filter(
+			(file) =>
+				file.mime?.startsWith("image/") &&
+				!file.name.startsWith("2026-"),
+		)
+		.map((file) => ({
+			src:
+				file.formats?.medium?.url ||
+				file.formats?.small?.url ||
+				file.url,
+			alt:
+				file.alternativeText ||
+				file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "),
+			fullSrc: file.url,
+			width: file.width || 1200,
+			height: file.height || 900,
+		}));
+}
+
 export function getVenues() {
 	return strapiQuery({ endpoint: "/venues" });
 }
