@@ -1,59 +1,106 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { galleryCollections } from "../data/gallery";
+import { getBrodieNationGallery } from "../data/strapi";
+
+const images = await getBrodieNationGallery();
+const showAll = Astro.url.searchParams.get("view") === "all";
+const featuredImages = images.slice(0, 3);
+const archiveImages = showAll ? images.slice(3) : [];
 ---
 
 <Layout title="Morgan Henley Presents | Gallery">
 	<main class="gallery-page">
 		<header class="gallery-heading">
 			<div>
-				<p class="eyebrow">The visual archive</p>
-				<h1>Proof of<br /><em>life.</em></h1>
+				{
+					showAll ? (
+						<h1>BrodieNation</h1>
+					) : (
+						<h1>Featured<br /><em>Galleries</em></h1>
+					)
+				}
 			</div>
-			<p class="heading-note">A growing collection of photographs from the nights, stages, and people that make MHP what it is.</p>
+			<p class="heading-note">Photos from the people, stages, and long summer nights that make BrodieNation what it is.</p>
 		</header>
 
 		<div class="collection-list">
-			{
-				galleryCollections.map((collection, collectionIndex) => (
-					<section class="collection" aria-labelledby={`collection-${collectionIndex}`}>
-						<div class="collection-meta">
-							<p class="eyebrow">{collection.year}</p>
-							<h2 id={`collection-${collectionIndex}`}>{collection.title}</h2>
-							<p class="collection-location">{collection.location}</p>
-							<p class="collection-description">{collection.description}</p>
-						</div>
-						<div class="photo-grid">
-							{
-								collection.images.map((image, imageIndex) => (
+			<section class="collection" aria-labelledby="brodienation-heading">
+				<div class="collection-meta">
+					<p class="eyebrow">Carnation, WA</p>
+					<h2 id="brodienation-heading">BrodieNation</h2>
+					<p class="collection-location">Summer archive</p>
+					<p class="collection-description">A little gem of a micro music festival, built around big-hearted people and loud guitars.</p>
+					<p class="photo-count">
+						{images.length} photographs
+					</p>
+					{
+						images.length > 3 && (
+							<a class="archive-link" href={showAll ? "/gallery" : "/gallery?view=all"}>
+								{showAll ? "← Back to featured" : `View all ${images.length} photos →`}
+							</a>
+						)
+					}
+				</div>
+				<div class="photo-grid">
+					{
+						featuredImages.length > 0 ? featuredImages.map((image, imageIndex) => (
 									<button
 										class={`photo photo-${imageIndex + 1}`}
 										type="button"
-										data-full-image={image.src}
+										data-image-index={imageIndex}
+										data-full-image={image.fullSrc}
 										data-image-alt={image.alt}
 										aria-label={`Open ${image.alt}`}
 									>
 										<img
 											src={image.src}
 											alt={image.alt}
-											width="1400"
-											height="1000"
-											loading={collectionIndex === 0 ? "eager" : "lazy"}
+											width={image.width}
+											height={image.height}
+											loading={imageIndex < 6 ? "eager" : "lazy"}
 											decoding="async"
 										/>
-										<span class="photo-index">0{imageIndex + 1}</span>
+										<span class="photo-index">{String(imageIndex + 1).padStart(2, "0")}</span>
 									</button>
-								))
-							}
+								)) : (
+							<p class="empty-state">No BrodieNation photographs are available right now.</p>
+						)
+					}
+				</div>
+				{
+					archiveImages.length > 0 && (
+						<div class="archive-grid" aria-label="Full BrodieNation photo archive">
+							{archiveImages.map((image, imageIndex) => (
+								<button
+									class="photo"
+									type="button"
+									data-image-index={imageIndex + 3}
+									data-full-image={image.fullSrc}
+									data-image-alt={image.alt}
+									aria-label={`Open ${image.alt}`}
+								>
+									<img
+										src={image.src}
+										alt={image.alt}
+										width={image.width}
+										height={image.height}
+										loading="lazy"
+										decoding="async"
+									/>
+									<span class="photo-index">{String(imageIndex + 4).padStart(2, "0")}</span>
+								</button>
+							))}
 						</div>
-					</section>
-				))
-			}
+					)
+				}
+			</section>
 		</div>
 
 		<div class="lightbox" data-lightbox aria-hidden="true">
 			<button class="lightbox-close" type="button" data-close-lightbox aria-label="Close image viewer">×</button>
+			<button class="lightbox-arrow lightbox-prev" type="button" data-previous-image aria-label="View previous image">←</button>
 			<img data-lightbox-image src="" alt="" />
+			<button class="lightbox-arrow lightbox-next" type="button" data-next-image aria-label="View next image">→</button>
 			<p data-lightbox-caption></p>
 		</div>
 	</main>
@@ -64,6 +111,10 @@ import { galleryCollections } from "../data/gallery";
 	const lightboxImage = document.querySelector<HTMLImageElement>("[data-lightbox-image]");
 	const lightboxCaption = document.querySelector<HTMLElement>("[data-lightbox-caption]");
 	const closeButton = document.querySelector<HTMLButtonElement>("[data-close-lightbox]");
+	const previousButton = document.querySelector<HTMLButtonElement>("[data-previous-image]");
+	const nextButton = document.querySelector<HTMLButtonElement>("[data-next-image]");
+	const photos = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-full-image]"));
+	let activeIndex = 0;
 
 	function closeLightbox() {
 		if (!lightbox || !lightboxImage || !lightboxCaption) return;
@@ -73,24 +124,35 @@ import { galleryCollections } from "../data/gallery";
 		document.body.style.overflow = "";
 	}
 
-	document.querySelectorAll<HTMLButtonElement>("[data-full-image]").forEach((photo) => {
+	function showImage(index: number) {
+		if (!lightbox || !lightboxImage || !lightboxCaption || photos.length === 0) return;
+		activeIndex = (index + photos.length) % photos.length;
+		const photo = photos[activeIndex];
+		lightboxImage.src = photo.dataset.fullImage || "";
+		lightboxImage.alt = photo.dataset.imageAlt || "";
+		lightboxCaption.textContent = photo.dataset.imageAlt || "";
+		lightbox.classList.add("is-open");
+		lightbox.setAttribute("aria-hidden", "false");
+		document.body.style.overflow = "hidden";
+	}
+
+	photos.forEach((photo, index) => {
 		photo.addEventListener("click", () => {
-			if (!lightbox || !lightboxImage || !lightboxCaption) return;
-			lightboxImage.src = photo.dataset.fullImage || "";
-			lightboxImage.alt = photo.dataset.imageAlt || "";
-			lightboxCaption.textContent = photo.dataset.imageAlt || "";
-			lightbox.classList.add("is-open");
-			lightbox.setAttribute("aria-hidden", "false");
-			document.body.style.overflow = "hidden";
+			showImage(index);
+			closeButton?.focus();
 		});
 	});
 
+	previousButton?.addEventListener("click", () => showImage(activeIndex - 1));
+	nextButton?.addEventListener("click", () => showImage(activeIndex + 1));
 	closeButton?.addEventListener("click", closeLightbox);
 	lightbox?.addEventListener("click", (event) => {
 		if (event.target === lightbox) closeLightbox();
 	});
 	document.addEventListener("keydown", (event) => {
 		if (event.key === "Escape") closeLightbox();
+		if (event.key === "ArrowLeft") showImage(activeIndex - 1);
+		if (event.key === "ArrowRight") showImage(activeIndex + 1);
 	});
 </script>
 
@@ -111,7 +173,13 @@ import { galleryCollections } from "../data/gallery";
 	.collection:first-child .collection-meta h2 { width: max-content; max-width: none; margin-right: -6rem; transform: translateX(2rem); text-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.55); }
 	.collection-location { margin: 0; color: var(--acid); font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; }
 	.collection-description { max-width: 15rem; margin-top: 3rem; color: var(--paper-muted); font-size: 0.85rem; line-height: 1.6; }
+	.photo-count { margin-top: 2rem; color: var(--acid); font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; }
+	.archive-link { display: inline-block; margin-top: 1.5rem; color: var(--paper); font-family: var(--mono); font-size: 0.7rem; text-decoration: none; text-transform: uppercase; transition: color 180ms ease, transform 180ms ease; }
+	.archive-link:hover, .archive-link:focus-visible { color: var(--acid); transform: translateX(0.25rem); }
+	.archive-link:focus-visible { outline: 1px solid var(--acid); outline-offset: 0.35rem; }
 	.photo-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; grid-template-rows: 13rem 13rem; gap: 0.8rem; }
+	.archive-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; }
+	.archive-grid .photo { aspect-ratio: 4 / 3; }
 	.photo { position: relative; min-width: 0; padding: 0; overflow: hidden; border: 0; cursor: zoom-in; background: var(--ink-soft); }
 	.photo-1 { grid-row: span 2; }
 	.photo img { width: 100%; height: 100%; display: block; object-fit: cover; filter: saturate(0.75) contrast(1.05); transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1), filter 500ms ease; }
@@ -122,6 +190,11 @@ import { galleryCollections } from "../data/gallery";
 	.lightbox img { max-width: min(90vw, 1000px); max-height: 82vh; object-fit: contain; }
 	.lightbox p { position: absolute; bottom: 1.5rem; left: 50%; margin: 0; color: var(--paper-muted); font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.05em; text-align: center; text-transform: uppercase; transform: translateX(-50%); }
 	.lightbox-close { position: absolute; top: 1rem; right: 1.5rem; border: 0; color: var(--acid); background: transparent; cursor: pointer; font-family: var(--serif); font-size: 3rem; line-height: 1; }
+	.lightbox-arrow { position: absolute; top: 50%; z-index: 1; display: grid; width: 3rem; height: 3rem; place-items: center; border: 1px solid var(--acid); border-radius: 50%; color: var(--acid); background: rgba(15, 15, 15, 0.65); cursor: pointer; font-family: var(--mono); font-size: 1.25rem; transform: translateY(-50%); transition: color 180ms ease, background 180ms ease; }
+	.lightbox-arrow:hover, .lightbox-arrow:focus-visible { color: var(--ink); background: var(--acid); }
+	.lightbox-arrow:focus-visible, .lightbox-close:focus-visible { outline: 2px solid var(--paper); outline-offset: 0.25rem; }
+	.lightbox-prev { left: 1.5rem; }
+	.lightbox-next { right: 1.5rem; }
 	@media (max-width: 760px) {
 		.gallery-page { padding: 4rem 1.25rem 1rem; }
 		.gallery-heading { display: block; padding-bottom: 3rem; }
@@ -130,6 +203,9 @@ import { galleryCollections } from "../data/gallery";
 		.collection:first-child .collection-meta h2 { width: auto; max-width: 100%; margin-right: 0; transform: none; }
 		.collection-description { margin-top: 1.5rem; }
 		.photo-grid { margin-top: 2.5rem; grid-template-rows: 11rem 11rem; }
+		.archive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0.8rem; }
 		.lightbox { padding: 1.25rem; }
+		.lightbox-prev { left: 0.75rem; }
+		.lightbox-next { right: 0.75rem; }
 	}
 </style>
