@@ -1,0 +1,229 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getFeaturedGalleries } from "../data/strapi";
+
+const galleries = await getFeaturedGalleries();
+const previewLimit = 4;
+---
+
+<Layout title="Morgan Henley Presents | Featured Galleries">
+	<main class="gallery-page">
+		<section class="intro">
+			<p class="eyebrow">MHP / visual archive</p>
+			<h1>Featured<br /><em>Galleries</em></h1>
+			<p class="intro-copy">
+				A rotating collection of nights, stages, and the people who make them
+				worth remembering.
+			</p>
+		</section>
+
+		{
+			galleries.length > 0 ? (
+				<div class="gallery-list">
+					{galleries.map((gallery, galleryIndex) => (
+						<section class="gallery-section" style={`--gallery-index: ${galleryIndex}`}>
+							<div class="gallery-heading">
+								<div>
+									<p class="gallery-number">{String(galleryIndex + 1).padStart(2, "0")}</p>
+									<h2>{gallery.title}</h2>
+								</div>
+								<p class="gallery-count">{gallery.images.length} frames</p>
+							</div>
+
+							<div class="contact-sheet">
+								{gallery.images.slice(0, previewLimit).map((image, imageIndex) => (
+									<button
+										class={`gallery-thumb thumb-${imageIndex + 1}`}
+										type="button"
+										data-gallery-index={galleryIndex}
+										data-image-index={imageIndex}
+										aria-label={`Open ${image.alt}`}
+									>
+										<img src={image.thumbnailUrl} alt={image.alt} loading="lazy" />
+										<span class="thumb-overlay"><span>View frame</span></span>
+									</button>
+								))}
+							</div>
+
+							<button
+								class="view-all"
+								type="button"
+								data-gallery={JSON.stringify(gallery.images)}
+								data-gallery-index={galleryIndex}
+								data-gallery-title={gallery.title}
+							>
+								<span>View all images</span>
+								<span class="arrow">↗</span>
+							</button>
+						</section>
+					))}
+				</div>
+			) : (
+				<section class="empty-state">
+					<p class="eyebrow">The archive is quiet</p>
+					<h2>No featured galleries yet.</h2>
+					<p>Create a Featured Gallery entry in Strapi and attach images from the Media Library to bring this page to life.</p>
+				</section>
+			)
+		}
+	</main>
+
+	<div class="lightbox" data-lightbox hidden>
+		<div class="lightbox-backdrop" data-close-lightbox></div>
+		<div class="lightbox-dialog" role="dialog" aria-modal="true" aria-label="Featured gallery viewer">
+			<div class="lightbox-topline">
+				<p data-lightbox-title>Featured Gallery</p>
+				<button class="close-button" type="button" data-close-lightbox aria-label="Close gallery">×</button>
+			</div>
+			<div class="lightbox-stage">
+				<button class="nav-button" type="button" data-previous aria-label="Previous image">←</button>
+				<figure>
+					<img data-lightbox-image src="" alt="" />
+					<figcaption><span data-lightbox-caption></span><span data-lightbox-count></span></figcaption>
+				</figure>
+				<button class="nav-button" type="button" data-next aria-label="Next image">→</button>
+			</div>
+		</div>
+	</div>
+</Layout>
+
+<script>
+	type GalleryImage = {
+		alt: string;
+		url: string;
+	};
+
+	const lightbox = document.querySelector<HTMLElement>("[data-lightbox]");
+	const lightboxImage = document.querySelector<HTMLImageElement>("[data-lightbox-image]");
+	const lightboxTitle = document.querySelector<HTMLElement>("[data-lightbox-title]");
+	const lightboxCaption = document.querySelector<HTMLElement>("[data-lightbox-caption]");
+	const lightboxCount = document.querySelector<HTMLElement>("[data-lightbox-count]");
+	const previousButton = document.querySelector<HTMLButtonElement>("[data-previous]");
+	const nextButton = document.querySelector<HTMLButtonElement>("[data-next]");
+	let images: GalleryImage[] = [];
+	let currentIndex = 0;
+
+	function renderImage() {
+		const image = images[currentIndex];
+		if (!image || !lightboxImage || !lightboxCaption || !lightboxCount) return;
+		lightboxImage.src = image.url;
+		lightboxImage.alt = image.alt;
+		lightboxCaption.textContent = image.alt;
+		lightboxCount.textContent = `${String(currentIndex + 1).padStart(2, "0")} / ${String(images.length).padStart(2, "0")}`;
+	}
+
+	function openLightbox(button: HTMLElement, index = 0) {
+		try {
+			images = JSON.parse(button.dataset.gallery || "[]") as GalleryImage[];
+		} catch {
+			images = [];
+		}
+		if (!lightbox || !images.length) return;
+		currentIndex = Math.min(Math.max(index, 0), images.length - 1);
+		if (lightboxTitle) lightboxTitle.textContent = button.dataset.galleryTitle || "Featured Gallery";
+		renderImage();
+		lightbox.hidden = false;
+		document.body.classList.add("lightbox-open");
+		document.querySelector<HTMLButtonElement>(".close-button")?.focus();
+	}
+
+	function closeLightbox() {
+		if (!lightbox) return;
+		lightbox.hidden = true;
+		document.body.classList.remove("lightbox-open");
+	}
+
+	document.querySelectorAll<HTMLElement>("[data-gallery]").forEach((button) => {
+		button.addEventListener("click", () => openLightbox(button));
+	});
+
+	document.querySelectorAll<HTMLButtonElement>("[data-image-index]").forEach((thumb) => {
+		thumb.addEventListener("click", () => {
+			const galleryButton = document.querySelector<HTMLElement>(
+				`.view-all[data-gallery-index="${thumb.dataset.galleryIndex}"]`,
+			);
+			if (galleryButton) openLightbox(galleryButton, Number(thumb.dataset.imageIndex));
+		});
+	});
+
+	previousButton?.addEventListener("click", () => {
+		currentIndex = (currentIndex - 1 + images.length) % images.length;
+		renderImage();
+	});
+	nextButton?.addEventListener("click", () => {
+		currentIndex = (currentIndex + 1) % images.length;
+		renderImage();
+	});
+	document.querySelectorAll<HTMLElement>("[data-close-lightbox]").forEach((element) => {
+		element.addEventListener("click", closeLightbox);
+	});
+	document.addEventListener("keydown", (event) => {
+		if (!lightbox || lightbox.hidden) return;
+		if (event.key === "Escape") closeLightbox();
+		if (event.key === "ArrowLeft") previousButton?.click();
+		if (event.key === "ArrowRight") nextButton?.click();
+	});
+</script>
+
+<style>
+	.gallery-page {
+		--ink: #f4f1e8;
+		--muted: #aaa99f;
+		--acid: var(--accent-light);
+		max-width: 1160px;
+		margin: 0 auto;
+		padding: clamp(4rem, 10vw, 8rem) 1.5rem 7rem;
+		color: var(--ink);
+	}
+	.intro { max-width: 700px; margin-bottom: clamp(5rem, 12vw, 9rem); animation: rise-in 0.8s ease both; }
+	.eyebrow, .gallery-number, .gallery-count, .lightbox-topline p { margin: 0; color: var(--acid); font: 600 0.7rem/1 "Courier New", monospace; letter-spacing: 0.16em; text-transform: uppercase; }
+	h1 { margin: 1.25rem 0 1.5rem; color: var(--ink); font: 700 clamp(4rem, 12vw, 9.5rem)/0.78 Georgia, "Times New Roman", serif; letter-spacing: -0.08em; }
+	h1 em { color: var(--acid); font-style: italic; font-weight: 400; }
+	.intro-copy { max-width: 27rem; margin: 0 0 0 12%; color: var(--muted); font-size: 1.05rem; line-height: 1.55; }
+	.gallery-list { display: grid; gap: clamp(6rem, 13vw, 11rem); }
+	.gallery-section { animation: rise-in 0.8s calc(var(--gallery-index) * 120ms + 150ms) ease both; }
+	.gallery-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid rgba(244, 241, 232, 0.22); padding-bottom: 0.85rem; }
+	.gallery-heading h2 { margin: 0.6rem 0 0; color: var(--ink); font: 400 clamp(2rem, 4vw, 3.5rem)/0.95 Georgia, "Times New Roman", serif; letter-spacing: -0.04em; }
+	.gallery-count { color: var(--muted); letter-spacing: 0.08em; }
+	.contact-sheet { display: grid; grid-template-columns: 1.35fr 0.85fr 0.85fr; grid-template-rows: minmax(150px, 25vw) minmax(120px, 18vw); gap: 0.75rem; }
+	.gallery-thumb { position: relative; min-width: 0; overflow: hidden; border: 0; padding: 0; cursor: pointer; background: #292a25; }
+	.thumb-1 { grid-row: span 2; }
+	.thumb-4 { grid-column: 2 / span 2; }
+	.gallery-thumb img { width: 100%; height: 100%; display: block; object-fit: cover; filter: saturate(0.78); transition: transform 0.7s cubic-bezier(.2,.8,.2,1), filter 0.5s ease; }
+	.gallery-thumb:hover img, .gallery-thumb:focus-visible img { transform: scale(1.06); filter: saturate(1.08); }
+	.thumb-overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(25, 26, 22, 0.38); color: white; opacity: 0; transition: opacity 0.35s ease; }
+	.thumb-overlay span { border-bottom: 1px solid var(--acid); padding-bottom: 0.3rem; font: 0.7rem "Courier New", monospace; text-transform: uppercase; letter-spacing: 0.1em; }
+	.gallery-thumb:hover .thumb-overlay, .gallery-thumb:focus-visible .thumb-overlay { opacity: 1; }
+	.view-all { display: flex; align-items: center; justify-content: space-between; width: min(100%, 20rem); margin: 1.25rem 0 0 auto; border: 0; border-bottom: 1px solid var(--acid); padding: 0.7rem 0; color: var(--ink); background: transparent; cursor: pointer; font: 0.75rem "Courier New", monospace; letter-spacing: 0.1em; text-transform: uppercase; }
+	.view-all:hover, .view-all:focus-visible { color: var(--acid); }
+	.arrow { font-size: 1.4rem; line-height: 0.5; transition: transform 0.3s ease; }
+	.view-all:hover .arrow { transform: translate(0.25rem, -0.25rem); }
+	.empty-state { border: 1px solid rgba(244, 241, 232, 0.25); padding: 4rem 2rem; text-align: center; }
+	.empty-state h2 { margin: 1rem 0; color: var(--ink); font: 400 2.5rem Georgia, serif; }
+	.empty-state p:last-child { color: var(--muted); }
+	.lightbox { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: rgba(10, 11, 9, 0.96); animation: fade-in 0.3s ease both; }
+	.lightbox[hidden] { display: none; }
+	.lightbox-backdrop { position: absolute; inset: 0; }
+	.lightbox-dialog { position: relative; z-index: 1; width: min(94vw, 1300px); }
+	.lightbox-topline { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+	.close-button { border: 0; color: var(--ink); background: transparent; cursor: pointer; font: 2rem/1 Georgia, serif; }
+	.lightbox-stage { display: grid; grid-template-columns: 3rem minmax(0, 1fr) 3rem; align-items: center; gap: 1rem; }
+	.lightbox-stage figure { margin: 0; }
+	.lightbox-stage img { display: block; width: 100%; max-height: 78vh; object-fit: contain; }
+	figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.8rem; color: var(--muted); font: 0.7rem "Courier New", monospace; }
+	.nav-button { width: 3rem; height: 3rem; border: 1px solid rgba(244, 241, 232, 0.35); color: var(--ink); background: transparent; cursor: pointer; font-size: 1.4rem; transition: border-color 0.2s, color 0.2s; }
+	.nav-button:hover, .nav-button:focus-visible { border-color: var(--acid); color: var(--acid); }
+	.lightbox-open { overflow: hidden; }
+	@keyframes rise-in { from { opacity: 0; transform: translateY(1.5rem); } to { opacity: 1; transform: translateY(0); } }
+	@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+	@media (max-width: 640px) {
+		.gallery-page { padding-inline: 1rem; }
+		.intro-copy { margin-left: 0; }
+		.contact-sheet { grid-template-columns: 1fr 1fr; grid-template-rows: 52vw 27vw; }
+		.thumb-1 { grid-row: auto; grid-column: span 2; }
+		.thumb-4 { grid-column: auto; }
+		.gallery-heading { align-items: start; flex-direction: column; }
+		.lightbox-stage { grid-template-columns: 2rem minmax(0, 1fr) 2rem; gap: 0.35rem; }
+		.nav-button { width: 2rem; height: 2rem; font-size: 1rem; }
+	}
+</style>
