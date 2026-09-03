@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getEvents, strapiGraphQL, strapiQuery } from "./strapi";
+import {
+	getEvents,
+	getFeaturedGalleries,
+	strapiGraphQL,
+	strapiQuery,
+} from "./strapi";
 
 describe("Strapi client", () => {
 	afterEach(() => {
@@ -42,6 +47,53 @@ describe("Strapi client", () => {
 		);
 
 		await expect(getEvents()).resolves.toEqual([{ id: 1 }]);
+	});
+
+	it("normalizes populated featured galleries and media URLs", async () => {
+		const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+			new Response(
+				JSON.stringify({
+					data: [
+						{
+							id: 2,
+							title: "BrodieNation",
+							images: [
+								{
+									id: 8,
+									name: "stage.jpg",
+									url: "/uploads/stage.jpg",
+									alternativeText: "BrodieNation on stage",
+									formats: {
+										medium: { url: "/uploads/medium-stage.jpg" },
+										thumbnail: { url: "/uploads/thumb-stage.jpg" },
+									},
+								},
+							],
+						},
+					],
+				}),
+				{ status: 200 },
+			),
+		);
+
+		await expect(getFeaturedGalleries()).resolves.toEqual([
+			{
+				title: "BrodieNation",
+				images: [
+					{
+						id: 8,
+						name: "stage.jpg",
+						alt: "BrodieNation on stage",
+						url: "http://localhost:1337/uploads/stage.jpg",
+						thumbnailUrl: "http://localhost:1337/uploads/medium-stage.jpg",
+					},
+				],
+			},
+		]);
+		expect(fetchMock).toHaveBeenCalledWith(
+			"http://localhost:1337/api/featured-galleries?populate=*&sort=createdAt%3Aasc",
+			expect.objectContaining({ method: "GET" }),
+		);
 	});
 
 	it("posts GraphQL queries and returns data", async () => {

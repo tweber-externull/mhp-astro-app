@@ -4,6 +4,19 @@ interface StrapiQueryParams {
 	method?: "GET" | "POST" | "PUT" | "DELETE";
 }
 
+export interface FeaturedGalleryImage {
+	id: number;
+	name: string;
+	alt: string;
+	url: string;
+	thumbnailUrl: string;
+}
+
+export interface FeaturedGallery {
+	title: string;
+	images: FeaturedGalleryImage[];
+}
+
 const STRAPI_URL = (
 	import.meta.env.STRAPI_URL || "http://localhost:1337"
 ).replace(/\/+$/, "");
@@ -99,4 +112,73 @@ export function getVenues() {
 
 export function getArtists() {
 	return strapiQuery({ endpoint: "/artists" });
+}
+
+function getMediaUrl(url: string) {
+	if (url.startsWith("http://") || url.startsWith("https://")) {
+		return url;
+	}
+
+	return `${STRAPI_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+}
+
+export async function getFeaturedGalleries(): Promise<FeaturedGallery[]> {
+	const response = await strapiQuery({
+		endpoint: "/featured-galleries",
+		query: {
+			populate: "*",
+			sort: "createdAt:asc",
+		},
+	});
+
+	const records = Array.isArray(response.data) ? response.data : [];
+	const galleries: FeaturedGallery[] = [];
+
+	for (const record of records) {
+		const galleryData = record?.attributes || record;
+		const title =
+			typeof galleryData?.title === "string"
+				? galleryData.title
+				: "Featured Gallery";
+		const rawImages = galleryData?.images?.data || galleryData?.images || [];
+		const images: FeaturedGalleryImage[] = [];
+
+		for (const rawImage of rawImages) {
+			const file = rawImage?.attributes || rawImage;
+			if (!file || typeof file.url !== "string") {
+				continue;
+			}
+
+			const thumbnailUrl =
+				typeof file.formats?.medium?.url === "string"
+					? file.formats.medium.url
+					: typeof file.formats?.small?.url === "string"
+						? file.formats.small.url
+						: typeof file.formats?.thumbnail?.url === "string"
+							? file.formats.thumbnail.url
+							: file.url;
+
+			images.push({
+				id: Number(file.id || rawImage.id),
+				name:
+					typeof file.name === "string" ? file.name : "Featured gallery image",
+				alt:
+					typeof file.alternativeText === "string" && file.alternativeText
+						? file.alternativeText
+						: typeof file.caption === "string" && file.caption
+							? file.caption
+							: typeof file.name === "string"
+								? file.name
+								: "Featured gallery image",
+				url: getMediaUrl(file.url),
+				thumbnailUrl: getMediaUrl(thumbnailUrl),
+			});
+		}
+
+		if (images.length > 0) {
+			galleries.push({ title, images });
+		}
+	}
+
+	return galleries;
 }
