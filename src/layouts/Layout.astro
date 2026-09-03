@@ -36,10 +36,11 @@ const pages = [
 		/>
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			type="text/css"
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap"
 			rel="stylesheet"
-			href="../font-awesome/css/font-awesome.min.css"
 		/>
 	</head>
 	<body>
@@ -50,24 +51,31 @@ const pages = [
 </html>
 <style is:global>
 	:root {
-		--background: rgb(30, 30, 30);
-		--primary: hsl(251, 85%, 65%);
-		--secondary: rgb(200, 200, 200);
-		--text-light: rgb(255, 255, 255, 1);
-		--text-dark: rgb(0, 0, 0);
-		--accent-light: rgb(193, 228, 180);
-		--accent: rgb(104, 190, 70);
-		--accent-dark: rgb(40, 75, 27);
-		--accent-gradient: linear-gradient(
-			45deg,
-			var(--accent-light) 45%,
-			var(--accent)
-		);
+		--background: #f5f1e8;
+		--surface: #fffdf7;
+		--surface-tint: #e7eee1;
+		--primary: #365c73;
+		--secondary: #dce8d8;
+		--text-light: #fffdf7;
+		--text-dark: #21362b;
+		--muted: #6d7d70;
+		--accent-light: #d6e5a9;
+		--accent: #9fbe70;
+		--accent-dark: #5c814d;
+		--line: rgba(54, 92, 115, 0.2);
+		--accent-gradient: linear-gradient(120deg, #d6e5a9, #b7d187);
 	}
 	html {
-		font-family: system-ui, sans-serif;
+		font-family: "DM Sans", sans-serif;
 		background: var(--background);
-		background-size: 224px;
+		color: var(--text-dark);
+	}
+	body {
+		margin: 0;
+		background:
+			radial-gradient(circle at 92% 8%, rgba(242, 200, 184, 0.35), transparent 19rem),
+			radial-gradient(circle at 7% 65%, rgba(215, 230, 211, 0.55), transparent 25rem),
+			var(--background);
 	}
 	code {
 		font-family:
@@ -80,9 +88,7 @@ const pages = [
 			Courier New,
 			monospace;
 	}
-	a {
-		color: var(--accent-light);
-	}
+	a { color: inherit; }
 	p {
 		margin-top: 0.5rem;
 	}
@@ -92,24 +98,8 @@ const pages = [
 	h4,
 	h5,
 	h6 {
-		font-weight: bold;
+		font-family: "Fraunces", Georgia, serif;
+		font-weight: 500;
 	}
-	h1 {
-		margin-top: 2rem;
-	}
-	h2 {
-		margin-top: 1.75rem;
-	}
-	h3 {
-		margin-top: 1.5rem;
-	}
-	h4 {
-		margin-top: 1.25rem;
-	}
-	h5 {
-		margin-top: 1rem;
-	}
-	h6 {
-		margin-top: 0.9rem;
-	}
+	::selection { color: var(--text-dark); background: var(--accent-light); }
 </style>

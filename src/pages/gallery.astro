@@ -206,10 +206,18 @@ const previewLimit = 4;
 		--acid: var(--accent-light);
 	}
 	.gallery-page {
-		max-width: 1160px;
+		max-width: none;
 		margin: 0 auto;
 		padding: clamp(4rem, 10vw, 8rem) 1.5rem 7rem;
 		color: var(--ink);
+		background:
+			radial-gradient(circle at 85% 8%, rgba(159, 190, 112, 0.2), transparent 22rem),
+			#263b30;
+	}
+	.gallery-page > * {
+		max-width: 1160px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	.intro {
 		max-width: 700px;

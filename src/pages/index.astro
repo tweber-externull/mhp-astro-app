@@ -11,79 +11,97 @@ const eventsData = await getEvents();
 <Layout
 	title="Morgan Henley Presents | Live Entertainment Booking and Promotions"
 >
-	<main class="container md:w-3/4 m-auto">
-		<h1 class="title text-center text-gradient md:font-size-l">Upcoming Events</h1>
-		{
-			eventsData && eventsData.length > 0 ? (
-				sortEventsByDate(eventsData).map((event: any) => {
-					const venue = event.event_days?.[0]?.event_day_venues?.[0]?.venue;
-					if (event.start_date && !isOutdated(event.start_date)) {
-						return (
-							<Card
-								date={event.start_date}
-								venueName={venue?.venue_name || 'TBA'}
-								eventTitle={event.event_name}
-								ticketLink={event.ticket_link || ''}
-								city={venue?.city || ''}
-								state={venue?.state || ''}
-								venueWebsite={venue?.website || ''}
-							/>
-						);
-					}
-				})
-			) : (
-				<p class="text-center">No upcoming events found. Make sure Strapi is running and has published events.</p>
-			)
-		}
+	<main>
+		<section class="hero">
+			<div class="hero-copy">
+				<p class="eyebrow">Independent event production · Snoqualmie Valley</p>
+				<h1>Good music<br />needs a <em>place</em><br />to grow.</h1>
+				<p class="hero-intro">Morgan Henley Presents brings artists, neighbors, and curious strangers together for memorable nights in the Pacific Northwest.</p>
+				<a class="hero-link" href="#upcoming">Find your next night <span>↓</span></a>
+			</div>
+			<div class="hero-art" aria-hidden="true">
+				<div class="sun"></div><div class="stem"></div><div class="leaf leaf-one"></div><div class="leaf leaf-two"></div>
+				<p>make room<br />for wonder</p>
+			</div>
+		</section>
+		<section class="events-section" id="upcoming">
+			<div class="section-heading">
+				<div><p class="eyebrow">The calendar</p><h2>Upcoming <em>gatherings</em></h2></div>
+				<p class="section-note">Small rooms. Loud hearts.<br />Come as you are.</p>
+			</div>
+			{
+				eventsData && eventsData.length > 0 ? (
+					<div class="event-list">
+						{sortEventsByDate(eventsData).map((event: any) => {
+							const venue = event.event_days?.[0]?.event_day_venues?.[0]?.venue;
+							if (event.start_date && !isOutdated(event.start_date)) return <Card date={event.start_date} venueName={venue?.venue_name || "TBA"} eventTitle={event.event_name} ticketLink={event.ticket_link || ""} city={venue?.city || ""} state={venue?.state || ""} venueWebsite={venue?.website || ""} />;
+						})}
+					</div>
+				) : <div class="empty-state"><p>No upcoming events just yet.</p><a href="mailto:morganhenleypresents@gmail.com">Ask about the next one ↗</a></div>
+			}
+		</section>
 	</main>
 </Layout>
 
 <style>
-	main {
+	main { overflow: hidden; }
+	.hero, .events-section {
+		max-width: 1180px;
 		margin: auto;
-		padding: 1rem;
-		max-width: calc(100% - 2rem);
-		color: var(--text-light);
-		font-size: 1rem;
-		line-height: 1.0;
+		padding-inline: clamp(1.25rem, 5vw, 5rem);
+	}
+	.hero {
+		position: relative;
+		min-height: min(660px, 70vh);
+		display: flex;
+		align-items: center;
+		padding-top: clamp(4rem, 10vw, 8rem);
+		padding-bottom: clamp(5rem, 10vw, 8rem);
+	}
+	.hero-copy { position: relative; z-index: 1; max-width: 650px; animation: rise 700ms both; }
+	.eyebrow {
+		margin: 0;
+		color: var(--accent-dark);
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
 	}
 	h1 {
-		font-size: 2rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
+		margin: 1.5rem 0 1.5rem;
+		color: var(--primary);
+		font: 500 clamp(3.5rem, 8.5vw, 7.3rem)/0.86 "Fraunces", Georgia, serif;
+		letter-spacing: -0.07em;
 	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: var(--accent-gradient);
-		background-size: 400%;
-		background-position: 0%;
-		color: var(--accent-light);
+	h1 em, h2 em { color: var(--accent); font-style: italic; font-weight: 400; }
+	.hero-intro { max-width: 26rem; margin: 0 0 2rem; color: var(--muted); font-size: 1rem; line-height: 1.55; }
+	.hero-link { color: var(--primary); font-size: 0.78rem; font-weight: 700; text-decoration: none; }
+	.hero-link span { display: inline-block; margin-left: 0.55rem; color: var(--accent); transition: transform 180ms ease; }
+	.hero-link:hover span { transform: translateY(0.25rem); }
+	.hero-art {
+		position: absolute; right: clamp(1rem, 8vw, 8rem); top: 15%; width: min(38vw, 390px); aspect-ratio: 1;
+		border-radius: 49% 51% 44% 56% / 51% 43% 57% 49%; background: var(--secondary);
+		transform: rotate(12deg); animation: drift 8s ease-in-out infinite;
 	}
-	.title {
-		margin-bottom: 2rem;
-		border: 2px outset var(--accent-light);
-		/* background: var(--accent-gradient); */
-		padding: 1.5rem;
-		border-radius: 8px;
-	}
-	.title code {
-		font-size: 0.8em;
-		font-weight: bold;
-		background: rgba(var(--accent-light), 12%);
-		color: rgb(var(--accent-light));
-		border-radius: 4px;
-		padding: 0.3em 0.4em;
-	}
-	.title strong {
-		color: rgb(var(--accent-light));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 2rem;
-		padding: 0;
+	.sun { position: absolute; width: 32%; aspect-ratio: 1; right: 12%; top: 11%; border-radius: 50%; background: var(--accent-light); }
+	.stem { position: absolute; width: 0.35rem; height: 62%; left: 48%; bottom: 5%; background: var(--primary); transform: rotate(18deg); transform-origin: bottom; }
+	.leaf { position: absolute; width: 27%; height: 15%; border-radius: 100% 0; background: var(--primary); }
+	.leaf-one { left: 29%; top: 44%; transform: rotate(25deg); }
+	.leaf-two { left: 50%; top: 57%; transform: rotate(195deg); }
+	.hero-art p { position: absolute; right: 12%; bottom: 15%; color: var(--primary); font: italic 1rem/1 "Fraunces", serif; transform: rotate(-12deg); }
+	.events-section { padding-bottom: 5rem; }
+	.section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 2rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+	h2 { margin: 0.6rem 0 0; color: var(--primary); font: 500 clamp(2.4rem, 5vw, 4.2rem)/0.92 "Fraunces", Georgia, serif; letter-spacing: -0.06em; }
+	.section-note { margin: 0; color: var(--muted); font-size: 0.78rem; line-height: 1.5; text-align: right; }
+	.empty-state { padding: 3rem; border: 1px dashed var(--line); border-radius: 1rem; color: var(--muted); text-align: center; }
+	.empty-state a { color: var(--accent-dark); font-size: 0.78rem; font-weight: 700; text-decoration: none; }
+	@keyframes rise { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: none; } }
+	@keyframes drift { 0%, 100% { transform: rotate(12deg) translateY(0); } 50% { transform: rotate(15deg) translateY(-0.8rem); } }
+	@media (max-width: 720px) {
+		.hero { min-height: 590px; align-items: flex-start; padding-top: 4rem; }
+		.hero-art { width: 70vw; right: -12vw; top: auto; bottom: 3%; opacity: 0.75; }
+		.hero-copy { max-width: 90%; }
+		.section-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }
+		.section-note { text-align: left; }
 	}
 </style>

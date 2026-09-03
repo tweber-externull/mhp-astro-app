@@ -7,35 +7,26 @@ interface Props {
 const { name, href } = Astro.props;
 ---
 
-<li class="nav-link max-w-40 center m-auto my-0">
+<li class="nav-link">
 	<a href={href}>{name}</a>
 </li>
 <style>
 	.nav-link {
 		list-style: none;
-		display: flex;
-		padding: 1rem;
-		background-image: none;
-		background-size: 400%;
-		background-position: 100%;
-		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-		font-weight: bold;
-		align-items: center;
+		display: block;
 	}
 	.nav-link > a {
-		width: 100%;
+		display: block;
 		text-decoration: none;
-		padding: calc(0.5rem - 1px);
-		border-radius: 8px;
-		color: var(--text-dark);
-		opacity: 0.8;
-	}
-	.nav-link:is(:hover, :focus-within) {
-		background-position: 0;
-		background-image: var(--accent-gradient);
-		color: var(--text-dark);
+		padding: 0.6rem 0.8rem;
+		border-radius: 99px;
+		color: var(--muted);
+		font-size: 0.78rem;
+		font-weight: 600;
+		transition: color 180ms ease, background 180ms ease;
 	}
 	.nav-link:is(:hover, :focus-within) > a {
-		color: var(--text-dark);
+		color: var(--primary);
+		background: var(--secondary);
 	}
 </style>

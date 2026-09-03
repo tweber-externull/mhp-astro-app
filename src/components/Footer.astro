@@ -7,29 +7,17 @@ interface Props {
 const { brandName, pages } = Astro.props;
 ---
 
-<footer class="py-4 text-white w-full flex flex-col gap-4 text-center">
-	<div class="container md:w-3/4 m-auto">
-		<div class="contact w-auto">
-			<h4 class="py-4">Contact:</h4>
-			<div class="container flex flex-col md:flex-row gap-4 text-center">
-				<div class="m-auto md:w-1/2">
-					<a href="tel:425-246-0695">
-						<i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
-						<p>425-246-0695</p>
-					</a>
-				</div>
-				<div class="m-auto md:w-1/2">
-					<a class="text-center flex flex-col" href="mailto:example@email.com">
-						<i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
-						<p class="m-auto">morganhenleypresents@gmail.com</p>
-					</a>
-				</div>
-			</div>
+<footer>
+	<div class="footer-inner">
+		<div>
+			<p class="footer-kicker">Bring the people together</p>
+			<h2>Let’s make a night<br /><em>worth remembering.</em></h2>
 		</div>
-		<div class="w-auto">
-			<h4 class="text-xl font-bold py-4">{brandName}</h4>
-			<navbar class="flex flex-row gap-4 text-center justify-center">
-				<li class="Home"><a href="/">Home</a></li>
+		<div class="contact">
+			<a href="mailto:morganhenleypresents@gmail.com">morganhenleypresents@gmail.com <span>↗</span></a>
+			<a href="tel:425-246-0695">425 246 0695</a>
+			<nav aria-label="Footer navigation">
+				<li><a href="/">Events</a></li>
 				{
 					pages.map((page: any) => {
 						return (
@@ -39,21 +27,75 @@ const { brandName, pages } = Astro.props;
 						);
 					})
 				}
-			</navbar>
+			</nav>
 		</div>
 	</div>
+	<p class="copyright">© {new Date().getFullYear()} {brandName} · Snoqualmie Valley, WA</p>
 </footer>
 
 <style>
 	footer {
-		bottom: 0;
-		min-height: 10rem;
-		background-color: var(--primary);
-	}
-	li {
-		list-style: none;
-	}
-	a:hover {
+		margin-top: 5rem;
+		padding: 4.5rem clamp(1.25rem, 5vw, 5rem) 1.5rem;
 		color: var(--text-light);
+		background: var(--primary);
+	}
+	.footer-inner {
+		max-width: 1180px;
+		margin: auto;
+		display: flex;
+		justify-content: space-between;
+		gap: 3rem;
+	}
+	.footer-kicker {
+		margin: 0 0 1rem;
+		color: var(--accent-light);
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	h2 {
+		margin: 0;
+		font: 400 clamp(2.4rem, 5vw, 4.8rem)/0.95 "Fraunces", Georgia, serif;
+		letter-spacing: -0.05em;
+	}
+	h2 em { color: var(--accent-light); }
+	.contact {
+		display: flex;
+		min-width: min(100%, 19rem);
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.65rem;
+		padding-top: 0.35rem;
+	}
+	.contact > a {
+		color: var(--text-light);
+		text-decoration: none;
+		font-size: 0.86rem;
+	}
+	.contact > a:first-child { color: var(--accent-light); }
+	.contact span { display: inline-block; margin-left: 0.4rem; transition: transform 180ms ease; }
+	.contact a:hover span { transform: translate(0.2rem, -0.2rem); }
+	nav {
+		display: flex;
+		gap: 1rem;
+		margin-top: 2.3rem;
+	}
+	li { list-style: none; }
+	nav a { color: rgba(255, 253, 247, 0.65); text-decoration: none; font-size: 0.75rem; }
+	nav a:hover { color: var(--text-light); }
+	.copyright {
+		max-width: 1180px;
+		margin: 5rem auto 0;
+		border-top: 1px solid rgba(255, 253, 247, 0.18);
+		padding-top: 1rem;
+		color: rgba(255, 253, 247, 0.55);
+		font-size: 0.68rem;
+		letter-spacing: 0.04em;
+	}
+	@media (max-width: 640px) {
+		.footer-inner { flex-direction: column; }
+		.contact { min-width: 0; }
 	}
 </style>

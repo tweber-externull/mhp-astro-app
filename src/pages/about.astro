@@ -103,18 +103,21 @@ import Layout from "../layouts/Layout.astro";
 	</div>
 
 	<style>
-		* {
-			color: var(--text-light);
+		#content-container {
+			max-width: 760px;
+			margin: 0 auto;
+			padding: 4rem 1.25rem 1rem;
+			color: var(--muted);
+			line-height: 1.7;
 		}
-		.cta > * {
-			color: var(--accent);
+		#content-container > p {
+			margin: 0 0 1.5rem;
 		}
-		.content-container > p {
-			margin-top: 5rem;
-			background-color: aqua;
+		#content-container a {
+			color: var(--accent-dark);
+			font-weight: 600;
 		}
-		a {
-			text-decoration: underline;
-		}
+		.bio-list-header { color: var(--primary); font-size: 1.2rem; }
+		#content-container ul { color: var(--muted); line-height: 1.8; padding: 0; }
 	</style>
 </Layout>
