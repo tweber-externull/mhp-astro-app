@@ -18,7 +18,7 @@ export interface FeaturedGallery {
 }
 
 const STRAPI_URL = (
-	import.meta.env.STRAPI_URL || "http://localhost:1337"
+	import.meta.env.STRAPI_URL || "https://mhp-strapi-cms-production.up.railway.app"
 ).replace(/\/+$/, "");
 const STRAPI_API_TOKEN = import.meta.env.STRAPI_API_TOKEN;
 

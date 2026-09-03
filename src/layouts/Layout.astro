@@ -36,11 +36,6 @@ const pages = [
 		/>
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="../font-awesome/css/font-awesome.min.css"
-		/>
 	</head>
 	<body>
 		<Header brandName="Morgan Henley Presents" pages={pages} />
@@ -48,68 +43,3 @@ const pages = [
 		<Footer brandName="Morgan Henley Presents" pages={pages} />
 	</body>
 </html>
-<style is:global>
-	:root {
-		--background: rgb(30, 30, 30);
-		--primary: hsl(251, 85%, 65%);
-		--secondary: rgb(200, 200, 200);
-		--text-light: rgb(255, 255, 255, 1);
-		--text-dark: rgb(0, 0, 0);
-		--accent-light: rgb(193, 228, 180);
-		--accent: rgb(104, 190, 70);
-		--accent-dark: rgb(40, 75, 27);
-		--accent-gradient: linear-gradient(
-			45deg,
-			var(--accent-light) 45%,
-			var(--accent)
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: var(--background);
-		background-size: 224px;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
-	a {
-		color: var(--accent-light);
-	}
-	p {
-		margin-top: 0.5rem;
-	}
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		font-weight: bold;
-	}
-	h1 {
-		margin-top: 2rem;
-	}
-	h2 {
-		margin-top: 1.75rem;
-	}
-	h3 {
-		margin-top: 1.5rem;
-	}
-	h4 {
-		margin-top: 1.25rem;
-	}
-	h5 {
-		margin-top: 1rem;
-	}
-	h6 {
-		margin-top: 0.9rem;
-	}
-</style>

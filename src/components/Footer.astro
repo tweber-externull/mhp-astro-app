@@ -1,59 +1,24 @@
 ---
-interface Props {
-	brandName: string;
-	pages: Array<{ title: string; uri: string; pageId: string }>;
-}
-
+interface Props { brandName: string; pages: Array<{ title: string; uri: string; pageId: string }>; }
 const { brandName, pages } = Astro.props;
 ---
-
-<footer class="py-4 text-white w-full flex flex-col gap-4 text-center">
-	<div class="container md:w-3/4 m-auto">
-		<div class="contact w-auto">
-			<h4 class="py-4">Contact:</h4>
-			<div class="container flex flex-col md:flex-row gap-4 text-center">
-				<div class="m-auto md:w-1/2">
-					<a href="tel:425-246-0695">
-						<i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
-						<p>425-246-0695</p>
-					</a>
-				</div>
-				<div class="m-auto md:w-1/2">
-					<a class="text-center flex flex-col" href="mailto:example@email.com">
-						<i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
-						<p class="m-auto">morganhenleypresents@gmail.com</p>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div class="w-auto">
-			<h4 class="text-xl font-bold py-4">{brandName}</h4>
-			<navbar class="flex flex-row gap-4 text-center justify-center">
-				<li class="Home"><a href="/">Home</a></li>
-				{
-					pages.map((page: any) => {
-						return (
-							<li class={page.title}>
-								<a href={page.uri}>{page.title}</a>
-							</li>
-						);
-					})
-				}
-			</navbar>
-		</div>
+<footer>
+	<div class="footer-inner">
+		<div><p class="footer-kicker">Bookings / partnerships</p><a class="email" href="mailto:morganhenleypresents@gmail.com">morganhenleypresents<br />@gmail.com</a></div>
+		<div class="footer-meta"><strong>{brandName}</strong><span>© {new Date().getFullYear()} / WA, USA</span><nav><a href="/">Home</a>{pages.map((page) => <a href={page.uri}>{page.title}</a>)}</nav></div>
 	</div>
 </footer>
-
 <style>
-	footer {
-		bottom: 0;
-		min-height: 10rem;
-		background-color: var(--primary);
-	}
-	li {
-		list-style: none;
-	}
-	a:hover {
-		color: var(--text-light);
-	}
+	footer { margin-top: 7rem; border-top: 1px solid var(--line); background: var(--signal); color: #17120f; }
+	.footer-inner { width: min(1200px, calc(100% - 3rem)); margin: auto; padding: 4rem 0 2rem; display: flex; justify-content: space-between; gap: 3rem; }
+	.footer-kicker, .footer-meta span, .footer-meta nav { font: 500 .68rem/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+	.footer-kicker { margin: 0 0 1rem; }
+	.email { color: #17120f; font: 600 clamp(1.8rem, 5vw, 4rem)/.85 var(--display); letter-spacing: -.02em; text-decoration: none; text-transform: uppercase; }
+	.email:hover { text-decoration: underline; }
+	.footer-meta { display: flex; flex-direction: column; align-items: end; gap: .7rem; text-align: right; }
+	.footer-meta strong { font: 700 1.2rem/1 var(--display); text-transform: uppercase; }
+	.footer-meta nav { display: flex; gap: 1rem; }
+	.footer-meta nav a { color: #17120f; text-decoration: none; }
+	.footer-meta nav a:hover { text-decoration: underline; }
+	@media (max-width: 640px) { .footer-inner { width: calc(100% - 2rem); padding-top: 3rem; flex-direction: column; } .footer-meta { align-items: start; text-align: left; } }
 </style>

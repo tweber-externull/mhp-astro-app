@@ -479,3 +479,30 @@ const previewLimit = 4;
 		.lightbox .nav-button[data-next] { right: 0.75rem; }
 	}
 </style>
+
+<style>
+	.gallery-page { --ink: var(--paper); --muted: var(--muted); --acid: var(--signal); max-width: 1200px; padding-top: 6rem; }
+	.intro { max-width: 900px; border-bottom: 1px solid var(--line); padding-bottom: 4rem; }
+	.eyebrow, .gallery-number, .gallery-count, .lightbox-topline p { font-family: var(--mono); }
+	h1 { font-family: var(--display); font-style: normal; letter-spacing: -.07em; text-transform: uppercase; }
+	h1 em { font-family: var(--display); font-style: italic; }
+	.intro-copy { margin-left: 0; font-family: var(--body); }
+	.gallery-list { gap: 7rem; }
+	.gallery-heading { border-bottom-color: var(--line); }
+	.gallery-heading h2 { font-family: var(--display); text-transform: uppercase; }
+	.contact-sheet { gap: 1px; background: var(--background); }
+	.gallery-thumb { background: var(--surface); }
+	.gallery-thumb img { filter: grayscale(1) contrast(1.1); }
+	.gallery-thumb:hover img, .gallery-thumb:focus-visible img { filter: grayscale(.2) contrast(1.05); }
+	.thumb-overlay { background: rgba(255,90,31,.78); color: #17120f; }
+	.thumb-overlay span { border-bottom-color: #17120f; font-family: var(--mono); font-weight: 500; }
+	.view-all { font-family: var(--mono); }
+	.empty-state { border-style: dashed; }
+	.empty-state h2 { font-family: var(--display); text-transform: uppercase; }
+	.lightbox { background: rgba(17,17,15,.98); }
+	.lightbox-stage img { filter: grayscale(.35); }
+	.close-button, .nav-button { border-radius: 0; box-shadow: none; font-family: var(--display); }
+	.close-button { background: var(--signal); }
+	.nav-button { border-color: var(--signal); background: var(--signal); }
+	@media (max-width: 640px) { .gallery-page { padding-top: 4rem; } }
+</style>
