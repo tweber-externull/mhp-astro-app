@@ -57,7 +57,7 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 
 The repository is connected to separate Vercel projects for production and
 staging. The `vercel.json` admin rewrites are restricted to
-`dev.morganhenleypresents.com`, so `/admin` and all nested admin paths (assets
+`staging.morganhenleypresents.com`, so `/admin` and all nested admin paths (assets
 and API routes included) use the staging CMS only on the staging domain.
 Production hosts do not match those rewrite rules and continue to use the
 production CMS.

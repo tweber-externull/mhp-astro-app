@@ -6,7 +6,7 @@
       "has": [
         {
           "type": "host",
-          "value": "dev\\.morganhenleypresents\\.com"
+          "value": "staging\\.morganhenleypresents\\.com"
         }
       ]
     },
@@ -16,7 +16,7 @@
       "has": [
         {
           "type": "host",
-          "value": "dev\\.morganhenleypresents\\.com"
+          "value": "staging\\.morganhenleypresents\\.com"
         }
       ]
     }
