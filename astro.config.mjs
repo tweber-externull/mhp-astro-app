@@ -1,14 +1,20 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
-import tailwind from "@astrojs/tailwind";
-
-import node from "@astrojs/node";
+import tailwindcss from "@tailwindcss/vite";
+import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
-  integrations: [react(), tailwind()],
-  adapter: node({
-    mode: "standalone"
-  })
+  vite: {
+    plugins: [tailwindcss()],
+    server: {
+      allowedHosts: [
+        "dev.morganhenleypresents.com",
+        "morganhenleypresents.com",
+      ],
+    },
+  },
+  output: "server",
+  integrations: [react()],
+  adapter: vercel(),
 });
