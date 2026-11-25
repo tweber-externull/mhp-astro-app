@@ -61,3 +61,17 @@ staging. The `vercel.json` admin rewrites are restricted to
 and API routes included) use the staging CMS only on the staging domain.
 Production hosts do not match those rewrite rules and continue to use the
 production CMS.
+
+## Deployment and release branches
+
+Vercel uses separate deployment tracks:
+
+- **Staging** tracks `main` and receives the latest changes after CI passes.
+- **Production** tracks one exact promoted `release/vMAJOR.MINOR.PATCH` branch at a time.
+- **Rollback** selects a prior known-good `release/vMAJOR.MINOR.PATCH` branch and redeploys it.
+
+Vercel cannot wildcard-track `release/**`. When a release is promoted, update the
+production Vercel project to that exact release branch. Keep prior release branches
+available so they can be selected for rollback. The **Create release** GitHub Actions
+workflow creates the release branch, tag, and GitHub Release from the current `main`
+commit after validating the requested `vMAJOR.MINOR.PATCH` version.
