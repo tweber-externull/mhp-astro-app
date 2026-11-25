@@ -52,3 +52,12 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## Vercel environments
+
+The repository is connected to separate Vercel projects for production and
+staging. The `vercel.json` admin rewrites are restricted to
+`dev.morganhenleypresents.com`, so `/admin` and all nested admin paths (assets
+and API routes included) use the staging CMS only on the staging domain.
+Production hosts do not match those rewrite rules and continue to use the
+production CMS.
