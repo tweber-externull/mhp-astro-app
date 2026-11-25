@@ -29,6 +29,30 @@ jobs:
             echo "Version must match vMAJOR.MINOR.PATCH (for example v1.2.3)." >&2
             exit 1
           fi
+          python3 - "$VERSION" <<'PY'
+          import re
+          import subprocess
+          import sys
+
+          pattern = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
+
+          def version_tuple(tag):
+              match = pattern.fullmatch(tag)
+              return tuple(map(int, match.groups())) if match else None
+
+          requested = version_tuple(sys.argv[1])
+          existing = [
+              (tag, version_tuple(tag))
+              for tag in subprocess.check_output(["git", "tag", "--list"], text=True).splitlines()
+              if version_tuple(tag) is not None
+          ]
+
+          if existing:
+              latest_tag, latest_version = max(existing, key=lambda item: item[1])
+              if requested <= latest_version:
+                  print(f"{sys.argv[1]} must be greater than the latest existing version {latest_tag}.", file=sys.stderr)
+                  sys.exit(1)
+          PY
 
       - name: Create release branch
         env:
