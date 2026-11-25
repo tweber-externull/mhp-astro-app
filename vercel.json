@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/admin/:path*",
+      "destination": "https://cms-staging.morganhenleypresents.com/admin/:path*"
+    }
+  ]
+}
