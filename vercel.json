@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "https://cms-staging.morganhenleypresents.com/admin",
+      "has": [
+        {
+          "type": "host",
+          "value": "staging\\.morganhenleypresents\\.com"
+        }
+      ]
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "https://cms-staging.morganhenleypresents.com/admin/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "staging\\.morganhenleypresents\\.com"
+        }
+      ]
+    }
+  ]
+}
